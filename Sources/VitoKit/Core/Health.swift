@@ -9,11 +9,11 @@ import Foundation
 import HealthKit
 import Accelerate
 
-private let store = HKHealthStore()
+let store = HKHealthStore()
 
-actor Health {
-    private let anchorKey = "anchorKey"
-    private var anchor: HKQueryAnchor? {
+public actor Health {
+    let anchorKey = "anchorKey"
+    var anchor: HKQueryAnchor? {
         get {
             // If user defaults returns nil, just return it.
             guard let data = UserDefaults.standard.object(forKey: anchorKey) as? Data else {
