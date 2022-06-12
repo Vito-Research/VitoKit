@@ -9,13 +9,23 @@ import Foundation
 
 public struct HealthData: Identifiable, Codable, Hashable, Sendable {
     
-    var id: String
-    var type: DataType
-    var title: String
-    var text: String
-    var date: Date
-    var endDate: Date?
-    var data: Double
+    public init(id: String, type: DataType, title: String, text: String, date: Date, endDate: Date, data: Double) {
+        self.id = id
+        self.type = type
+        self.title = title
+        self.text = text
+        self.date = date
+        self.endDate = endDate
+        self.data = data
+    }
+    
+    public var id: String
+    public var type: DataType
+    public var title: String
+    public var text: String
+    public var date: Date
+    public var endDate: Date?
+    public var data: Double
 
     
     

@@ -10,29 +10,45 @@ import HealthKit
 
 public class VitoPermissions {
     
-    let healthStore = HKHealthStore()
+    public init() {}
     
-    var selectedTypes: [HealthType] = []
+    public let healthStore = HKHealthStore()
     
-    public func authorize(`var` selectedTypes: [HealthType] = []) async -> Bool {
+    public var selectedTypes: [HealthType] = [.Vitals]
+    
+    public func authorize(selectedTypes: [HealthType] = []) async throws {
+        var selected = [HealthType]()
+        var quanityTypes: Set<HKQuantityType> = []
         
-        var quanityTypes = [HKObjectType]()
-        
-        selectedTypes.isEmpty ? self.selectedTypes : selectedTypes
+        selected = selectedTypes.isEmpty ? self.selectedTypes : selectedTypes
             
         
-        for type in selectedTypes {
+        for type in selected {
             switch(type) {
             case .Activity:
-                quanityTypes.append(contentsOf: HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activity)!)
+                
+                let activity = HKQuantityTypeIdentifier.activity
+                
+                quanityTypes =  Set<HKQuantityType>(activity.map { id in
+                    return HKQuantityType(id)
+                })
+            
             case .Mobility:
-                quanityTypes.append(contentsOf: HKQuantityTypeIdentifier.mobility)
+                let mobility = HKQuantityTypeIdentifier.mobility
+                
+                quanityTypes =  Set<HKQuantityType>(mobility.map { id in
+                    return HKQuantityType(id)
+                })
             case .Vitals:
-                quanityTypes.append(contentsOf: HKQuantityTypeIdentifier.vitals)
+                let vitals = HKQuantityTypeIdentifier.vitals
+                
+                quanityTypes =  Set<HKQuantityType>(vitals.map { id in
+                    return HKQuantityType(id)
+                })
             }
             
         }
       
-        self.healthStore.requestAuthorization(toShare: [], read: Set<HKSampleType>(quanityTypes))
+         try await self.healthStore.requestAuthorization(toShare: [], read: quanityTypes)
     }
 }

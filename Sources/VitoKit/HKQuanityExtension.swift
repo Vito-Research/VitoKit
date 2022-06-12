@@ -14,14 +14,15 @@ extension HKQuantityTypeIdentifier: CaseIterable {
         return []
     }
     
-    public static var mobility: [HKQuantityTypeIdentifier] {
+    public static var mobility: Set<HKQuantityTypeIdentifier> {
         return [.walkingSpeed, .walkingStepLength, .walkingAsymmetryPercentage, appleWalkingSteadiness]
     }
-    public static var activity: [HKQuantityTypeIdentifier] {
+    
+    public static var activity: Set<HKQuantityTypeIdentifier> {
         return [.stepCount, .appleExerciseTime, .distanceCycling, .distanceSwimming, .distanceWalkingRunning, .sixMinuteWalkTestDistance]
     }
 
-    public static var vitals: [HKQuantityTypeIdentifier] {
+    public static var vitals: Set<HKQuantityTypeIdentifier> {
         return [.heartRate, .heartRateVariabilitySDNN, .respiratoryRate, .restingHeartRate, .oxygenSaturation]
     }
     

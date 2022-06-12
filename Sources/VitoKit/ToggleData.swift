@@ -8,17 +8,29 @@
 import Foundation
 import SFSafeSymbols
 
-struct ToggleData: Identifiable, Hashable {
+public struct ToggleData: Identifiable, Hashable {
     
-    var id: UUID
-    var toggle: Bool
-    var explanation: Explanation
+    public init(id: UUID, toggle: Bool, explanation: Explanation) {
+        self.id = id
+        self.toggle = toggle
+        self.explanation = explanation
+    }
+    
+    public var id: UUID
+    public var toggle: Bool
+    public var explanation: Explanation
     
 }
-struct Explanation: Hashable {
+public struct Explanation: Hashable {
     
-    var image: SFSymbol
-    var explanation: String
-    var detail: String
+    public init(image: SFSymbol, explanation: String, detail: String) {
+        self.image = image
+        self.explanation = explanation
+        self.detail = detail
+    }
+    
+    public var image: SFSymbol
+    public var explanation: String
+    public var detail: String
     
 }

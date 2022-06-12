@@ -7,21 +7,25 @@
 
 import Foundation
 import HealthKit
+
 public class Vito: VitoPermissions {
     
-    let health = Health()
+    public let health = Health()
+    
+   
     
     public func dailyData(for category: HealthType, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none) async -> [HealthData] {
         
-        if authorize(selectedTypes: category) {
-            
-            let quanities = category == .Vitals ? HKQuantityTypeIdentifier.vitals : category == .Activity ? HKQuantityTypeIdentifier.activity : HKQuantityTypeIdentifier.mobility
-            
-            let units = category == .Vitals ? HKQuantityTypeIdentifier.vitals : category == .Activity ? HKQuantityTypeIdentifier.activity : HKQuantityTypeIdentifier.mobility
-            
-            for (type, unit) in Array(zip(quanities, units)) {
-            health.loadNewDataFromHealthKit(type: type, unit: unit, start: startDate, end: endDate)
-        }
-    }
+//        if authorize(selectedTypes: category) {
+//
+//            let quanities = category == .Vitals ? HKQuantityTypeIdentifier.vitals : category == .Activity ? HKQuantityTypeIdentifier.activity : HKQuantityTypeIdentifier.mobility
+//
+//            let units = category == .Vitals ? HKQuantityTypeIdentifier.vitals : category == .Activity ? HKQuantityTypeIdentifier.activity : HKQuantityTypeIdentifier.mobility
+//
+//            for (type, unit) in Array(zip(quanities, units)) {
+//            health.loadNewDataFromHealthKit(type: type, unit: unit, start: startDate, end: endDate)
+//        }
+//    }
+        return []
     }
 }

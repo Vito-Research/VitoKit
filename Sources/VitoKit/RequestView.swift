@@ -10,22 +10,38 @@ import SFSafeSymbols
 
 public struct DataTypesListView: View {
     
-    @State var toggleData = [ToggleData(id: UUID(), toggle: false, explanation: Explanation(image: .heart, explanation: "Heart Rate", detail: "Abnormally high heart rate while asleep can be a sign of distress from your body")), ToggleData(id: UUID(), toggle: false, explanation: Explanation(image: .lungs, explanation: "Respiratory Rate", detail: "High respiratory rate while asleep can be a sign of distress from your body")), ToggleData(id: UUID(), toggle: false, explanation:  Explanation(image: .person , explanation: "Steps", detail: "Utilized to detect when you are alseep")), ToggleData(id: UUID(), toggle: false, explanation: Explanation(image: .flame, explanation: "Active Energy", detail: "Utilized to detect when you are alseep"))]
+    @State public var toggleData: [ToggleData]
     
-    public init(toggleData: [ToggleData]) {
+    @State public var title: String
+    
+    @State public var caption: String
+    
+    public init(toggleData: [ToggleData], title: String, caption: String) {
         self.toggleData = toggleData
+        self.title = title
+        self.caption = caption
     }
     
     public var body: some View {
         VStack {
-            
-               
+            Group {
+               Text(title)
+                .font(.title.bold())
+            Text(caption)
+             .font(.caption.bold())
+             .padding(.horizontal)
+             .padding(.horizontal)
+             .fixedSize(horizontal: false, vertical: true)
+            } .padding()
+            Spacer()
             ForEach(toggleData.indices, id:\.self) { i in
                 Button(action: {
+                    withAnimation(.beat) {
                     if !(toggleData[i].toggle) {
                         toggleData[i].toggle = true
                     } else {
                         toggleData[i].toggle = false
+                    }
                     }
                 }) {
                     VStack {
@@ -33,27 +49,42 @@ public struct DataTypesListView: View {
                     
                     Image(systemSymbol: toggleData[i].explanation.image)
                         .font(.title.bold())
+                        .frame(width: 75)
+                    if !toggleData[i].explanation.explanation.isEmpty {
                     Text(toggleData[i].explanation.explanation)
                         .multilineTextAlignment(.leading)
                         .font(.headline)
+                    }
                     Spacer()
                 }
                     if (toggleData[i].toggle) {
                 HStack {
                     
                     Text(toggleData[i].explanation.detail)
-                        .font(.caption)
+                        .font(.caption.bold())
                     .fixedSize(horizontal: false, vertical: true)
-                    .foregroundColor(Color.cyan)
+                    .foregroundColor(Color.blue.opacity(0.6))
                     .padding(.top)
+                    .padding(.leading)
                     .multilineTextAlignment(.leading)
                     Spacer()
                 }
                     }
                     }
-                Divider()
+               // Divider()
             }
+                Spacer()
         } .padding()
+            Button("APPROVE") {
+                Task {
+                    do {
+                        await try Vito().authorize()
+                    } catch {
+                        
+                    }
+                }
+            } .buttonStyle(VitoBtnStyle())
+              
         }
     }
 

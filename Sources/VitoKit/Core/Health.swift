@@ -9,11 +9,11 @@ import Foundation
 import HealthKit
 import Accelerate
 
-let store = HKHealthStore()
+public let store = HKHealthStore()
 
 public actor Health {
-    let anchorKey = "anchorKey"
-    var anchor: HKQueryAnchor? {
+    public let anchorKey = "anchorKey"
+    public var anchor: HKQueryAnchor? {
         get {
             // If user defaults returns nil, just return it.
             guard let data = UserDefaults.standard.object(forKey: anchorKey) as? Data else {
@@ -56,14 +56,14 @@ public actor Health {
         if let quantitySamples = samples?.compactMap({ sample in
             sample as? HKQuantitySample
         }).filter{$0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber != activityType.rawValue }.map{$0.quantity.doubleValue(for: unit)} {
-            return HealthData(id: UUID().uuidString, type: .Health, title: type.identifier, text: "", date: start, data: vDSP.mean(quantitySamples))
+            return HealthData(id: UUID().uuidString, type: .Health, title: type.identifier, text: "", date: start, endDate: end, data: vDSP.mean(quantitySamples))
             } else {
                 
             }
            
         return nil
     }
-     func queryHealthKit(_ type: HKSampleType, startDate: Date, endDate: Date) async throws -> ([HKSample]?, [HKDeletedObject]?, HKQueryAnchor?) {
+    public func queryHealthKit(_ type: HKSampleType, startDate: Date, endDate: Date) async throws -> ([HKSample]?, [HKDeletedObject]?, HKQueryAnchor?) {
         return try await withCheckedThrowingContinuation { continuation in
             // Create a predicate that only returns samples created within the last 24 hours.
           
