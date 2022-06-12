@@ -14,14 +14,17 @@ public class VitoPermissions {
     
     var selectedTypes: [HealthType] = []
     
-    public func authorize(selectedTypes: [HealthType] = selectedTypes) async -> Bool {
+    public func authorize(`var` selectedTypes: [HealthType] = []) async -> Bool {
         
-        var quanityTypes = [HKQuantityType]()
+        var quanityTypes = [HKObjectType]()
+        
+        selectedTypes.isEmpty ? self.selectedTypes : selectedTypes
+            
         
         for type in selectedTypes {
             switch(type) {
             case .Activity:
-                quanityTypes.append(contentsOf: HKQuantityTypeIdentifier.activity)
+                quanityTypes.append(contentsOf: HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activity)!)
             case .Mobility:
                 quanityTypes.append(contentsOf: HKQuantityTypeIdentifier.mobility)
             case .Vitals:
@@ -30,6 +33,6 @@ public class VitoPermissions {
             
         }
       
-        self.healthStore.requestAuthorization(toShare: [], read: quanityTypes)
+        self.healthStore.requestAuthorization(toShare: [], read: Set<HKSampleType>(quanityTypes))
     }
 }

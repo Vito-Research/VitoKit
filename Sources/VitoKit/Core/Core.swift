@@ -7,7 +7,7 @@
 
 import Foundation
 import HealthKit
-public class VitoHealth: VitoPermissions {
+public class Vito: VitoPermissions {
     
     let health = Health()
     

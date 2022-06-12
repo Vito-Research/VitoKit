@@ -25,9 +25,11 @@ let package = Package(
         .target(
             name: "VitoKit",
             
-            dependencies: []),
+            dependencies: [
+                
+            ]),
         .testTarget(
             name: "VitoKitTests",
-            dependencies: ["VitoKit"]),
+            dependencies: ["VitoKit"])
     ]
 )
