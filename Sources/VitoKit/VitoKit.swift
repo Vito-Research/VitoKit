@@ -1,6 +1,6 @@
 public struct VitoKit {
-    public private(set) var text = "Hello, World!"
-
+    
+    public static var vito = VitoHealth()
     public init() {
     }
 }
