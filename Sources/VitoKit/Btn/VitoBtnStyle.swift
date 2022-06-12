@@ -17,9 +17,9 @@ extension Animation {
     static var beat = Animation.interpolatingSpring(mass: 0.13, stiffness: 5.7, damping: 1.2, initialVelocity: 10.0)
 }
 public struct VitoBtnStyle: ButtonStyle {
-    @State private var points = [Point( x: 80, y: 30, degree: CGFloat.random(in: 20...30), color: .blue), Point(x: -90, y: 30, degree: CGFloat.random(in: 60...70), color: .teal), Point( x: 85, y: -40, degree: CGFloat.random(in: 30...60), color: .purple), Point( x: -90, y: -30, degree: CGFloat.random(in: 30...30), color: .purple.opacity(0.6))]
+    @State var points = [Point( x: 80, y: 30, degree: CGFloat.random(in: 20...30), color: .blue), Point(x: -90, y: 30, degree: CGFloat.random(in: 60...70), color: .teal), Point( x: 85, y: -40, degree: CGFloat.random(in: 30...60), color: .purple), Point( x: -90, y: -30, degree: CGFloat.random(in: 30...30), color: .purple.opacity(0.6))]
       
-       @State private var scale = 1.0
+       @State var scale = 1.0
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.system(.headline))
