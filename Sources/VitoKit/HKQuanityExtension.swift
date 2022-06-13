@@ -23,7 +23,7 @@ extension HKQuantityTypeIdentifier: CaseIterable {
     }
 
     public static var vitals: Set<HKQuantityTypeIdentifier> {
-        return [.heartRate, .heartRateVariabilitySDNN, .respiratoryRate, .restingHeartRate, .oxygenSaturation]
+        return [.heartRate]//, .respiratoryRate, .restingHeartRate]
     }
     
 }
@@ -50,6 +50,6 @@ extension HKUnit: CaseIterable {
     }
     
     public static var vitals: [HKUnit] {
-        [.count().unitDivided(by: .minute()), .secondUnit(with: .milli), .count().unitDivided(by: .minute()), .count().unitDivided(by: .minute()), .percent()]
+        [HKUnit(from: "count/min")]//, HKUnit(from: "count/min"), HKUnit(from: "count/min")]
     }
 }

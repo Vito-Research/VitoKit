@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SFSafeSymbols
 
 public struct Point: Hashable {
     var x: Int
@@ -19,26 +20,35 @@ extension Animation {
 }
 public struct VitoBtnStyle: ButtonStyle {
     
-    public init() {}
+    @State public var icons: [SFSymbol]
+    public init(icons: [SFSymbol]) {
+        self.icons = icons
+    }
     
-    @State public var points = [Point( x: 80, y: 30, degree: CGFloat.random(in: 20...30), color: .blue), Point(x: -90, y: 30, degree: CGFloat.random(in: 60...70), color: .teal), Point( x: 85, y: -40, degree: CGFloat.random(in: 30...60), color: .purple), Point( x: -90, y: -30, degree: CGFloat.random(in: 30...30), color: .purple.opacity(0.6))]
+    @State public var points = [Point( x: 80, y: 30, degree: CGFloat.random(in: 20...30), color: .teal.opacity(0.6)), Point(x: -90, y: 30, degree: CGFloat.random(in: 60...70), color: .teal), Point( x: 85, y: -40, degree: CGFloat.random(in: 30...60), color: .purple), Point( x: -90, y: -30, degree: CGFloat.random(in: 30...30), color: .purple.opacity(0.6))]
       
        @State public var scale = 1.0
     
     public func makeBody(configuration: Configuration) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 25).foregroundColor(Color.accentColor)
         configuration.label
             .font(.system(.headline))
             .foregroundColor(.white)
-            .padding()
-            .padding(.horizontal)
-            .background(RoundedRectangle(cornerRadius: 25).foregroundColor(Color.accentColor))
+            //.padding()
+           // .padding(.horizontal)
             .scaleEffect(configuration.isPressed ? 1.1 : 1)
+           
+       
+    } .scaleEffect(configuration.isPressed ? 1.02 : 1)
+            .frame(minHeight: 60, maxHeight: 80)
+            .padding()
             .overlay(
                 ZStack {
                
-                    ForEach(points, id: \.self) { point in
+                    ForEach(Array(zip(points, icons)), id: \.0) { point, icon in
                         ZStack {
-                            Image(systemSymbol: .heart)
+                            Image(systemSymbol: icon)
                                 .font(.largeTitle.bold())
                             
                                             .offset(x: configuration.isPressed ? CGFloat(point.x)  : 0, y: configuration.isPressed ? CGFloat(point.y)  : 0)
@@ -53,7 +63,7 @@ public struct VitoBtnStyle: ButtonStyle {
                 }
                 } .onChange(of: configuration.isPressed, perform: { newValue in
                     if !newValue {
-                        points = [Point( x: 80, y: 30, degree: CGFloat.random(in: 20...30), color: .blue), Point(x: -90, y: 30, degree: CGFloat.random(in: 60...70), color: .teal), Point( x: 85, y: -40, degree: CGFloat.random(in: 30...60), color: .purple), Point( x: -90, y: -30, degree: CGFloat.random(in: 30...30), color: .mint)]
+                        points = [Point( x: 80, y: 30, degree: CGFloat.random(in: 20...30), color: .teal.opacity(0.6)), Point(x: -90, y: 30, degree: CGFloat.random(in: 60...70), color: .teal), Point( x: 85, y: -40, degree: CGFloat.random(in: 30...60), color: .purple), Point( x: -90, y: -30, degree: CGFloat.random(in: 30...30), color: .purple.opacity(0.6))]
                     }
                 })
                

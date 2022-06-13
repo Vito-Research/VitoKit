@@ -7,14 +7,38 @@
 
 import Foundation
 import HealthKit
+import SwiftUI
 
-public class VitoPermissions {
+@MainActor
+public class VitoPermissions: ObservableObject {
     
-    public init() {}
+    public init() {
+        self.auth()
+    }
     
     public let healthStore = HKHealthStore()
     
-    public var selectedTypes: [HealthType] = [.Vitals]
+    public var selectedTypes: [HealthType] = [.Activity]
+    
+    @Published public var autheticated = false
+    
+    public func auth() {
+        Task {
+            do {
+                
+                try await authorize()
+                withAnimation(.easeInOut) {
+                    autheticated = true
+                }
+               
+            } catch {
+                
+            }
+            
+        }
+        
+        
+    }
     
     public func authorize(selectedTypes: [HealthType] = []) async throws {
         var selected = [HealthType]()
@@ -48,7 +72,13 @@ public class VitoPermissions {
             }
             
         }
-      
-         try await self.healthStore.requestAuthorization(toShare: [], read: quanityTypes)
+        let vitals = HKQuantityTypeIdentifier.vitals
+        
+        quanityTypes =  Set<HKQuantityType>(vitals.map { id in
+            return HKQuantityType(id)
+        })
+        try await self.healthStore.requestAuthorization(toShare: [], read: quanityTypes)
+        try await self.healthStore.requestAuthorization(toShare: [], read: [HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!])
+        
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 
 public struct HealthData: Identifiable, Codable, Hashable, Sendable {
     
-    public init(id: String, type: DataType, title: String, text: String, date: Date, endDate: Date, data: Double) {
+    public init(id: String, type: DataType, title: String, text: String, date: Date, endDate: Date, data: Double, risk: Int) {
         self.id = id
         self.type = type
         self.title = title
@@ -17,6 +17,7 @@ public struct HealthData: Identifiable, Codable, Hashable, Sendable {
         self.date = date
         self.endDate = endDate
         self.data = data
+        self.risk = risk
     }
     
     public var id: String
@@ -26,6 +27,7 @@ public struct HealthData: Identifiable, Codable, Hashable, Sendable {
     public var date: Date
     public var endDate: Date?
     public var data: Double
+    public var risk: Int
 
     
     

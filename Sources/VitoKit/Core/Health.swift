@@ -9,9 +9,10 @@ import Foundation
 import HealthKit
 import Accelerate
 
-public let store = HKHealthStore()
+
 
 public actor Health {
+    public let store = HKHealthStore()
     public let anchorKey = "anchorKey"
     public var anchor: HKQueryAnchor? {
         get {
@@ -50,18 +51,19 @@ public actor Health {
     @discardableResult
     public func loadNewDataFromHealthKit(type: HKSampleType, unit: HKUnit, start: Date, end: Date, activityType: ActivityType) async throws -> HealthData? {
         
-        let (samples, deletedSamples, newAnchor) = try await queryHealthKit(type, startDate: start, endDate: end)
+        let (samples, _, newAnchor) = try await queryHealthKit(type, startDate: start, endDate: end)
             // Update the anchor.
         self.anchor = newAnchor
         if let quantitySamples = samples?.compactMap({ sample in
             sample as? HKQuantitySample
-        }).filter{$0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber != activityType.rawValue }.map{$0.quantity.doubleValue(for: unit)} {
-            return HealthData(id: UUID().uuidString, type: .Health, title: type.identifier, text: "", date: start, endDate: end, data: vDSP.mean(quantitySamples))
+        }).map({$0.quantity.doubleValue(for: unit)}) {
+            //.filter{$0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber == activityType.rawValue }
+            return HealthData(id: UUID().uuidString, type: .Health, title: type.identifier, text: "", date: start, endDate: end, data: vDSP.mean(quantitySamples), risk: 0)
             } else {
-                
+                return nil
             }
            
-        return nil
+        
     }
     public func queryHealthKit(_ type: HKSampleType, startDate: Date, endDate: Date) async throws -> ([HKSample]?, [HKDeletedObject]?, HKQueryAnchor?) {
         return try await withCheckedThrowingContinuation { continuation in
@@ -73,13 +75,14 @@ public actor Health {
             let query = HKAnchoredObjectQuery(
                 type: type,
                 predicate: datePredicate,
-                anchor: anchor,
+                anchor: nil,
                 limit: HKObjectQueryNoLimit) { (_, samples, deletedSamples, newAnchor, error) in
                 //print(samples)
                 // When the query ends, check for errors.
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else {
+                    //print(samples)
                     continuation.resume(returning: (samples, deletedSamples, newAnchor))
                 }
                 
