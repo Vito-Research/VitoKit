@@ -4,7 +4,7 @@
 
 ## 😀 Welcome to VitoKit..
 
-### A framework that enhances HealthKit and thew Fitbit API for iOS
+### A framework that enhances HealthKit and the Fitbit API for iOS
 
 ### ✅ Features
 
