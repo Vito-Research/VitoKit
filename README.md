@@ -20,6 +20,9 @@ let package = Package(
         .package(url: "git@github.com:Vito-Research/VitoKit.git", from: "0.0.0")
     ]
 )
+
+import VitoKit
+
 ```
 
 #### Request Permission
@@ -45,6 +48,7 @@ State Machine
 A level based algorithm that detects outliers
 
 ```swift
+let vito = Vito()
 vito.populateWithTrends(for: .Vitals, with: Date().addingTimeInterval(.month * 24), to: Date(), filterToActivity: .active)
 ```
 
