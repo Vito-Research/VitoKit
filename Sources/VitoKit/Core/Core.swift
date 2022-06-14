@@ -21,9 +21,9 @@ public class Vito: VitoPermissions {
     // Stores health data for reference or computations
     @Published public var healthData = [HealthData]()
     
-    @Published var progress: CGFloat = 0.0
+    @Published public var progress: CGFloat = 0.0
     
-    @Published var risk = Risk(id: UUID().uuidString, risk: 21, explanation: [Explanation(image: .return, explanation: "Loading", detail: "")])
+    @Published public var risk = Risk(id: UUID().uuidString, risk: 21, explanation: [Explanation(image: .return, explanation: "Loading", detail: "")])
     
     // Special state machine for heart rate data, filters to when asleep, inactive, and at night
     public func vitoState(for category: HealthType, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none) {
