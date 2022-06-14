@@ -7,6 +7,7 @@
 
 import Foundation
 
+// Subtracts time from a date
 extension TimeInterval {
     public static let hour =   -60 * 60.0
     public static let day   =  -86400.0

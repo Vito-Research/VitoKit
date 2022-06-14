@@ -7,6 +7,7 @@
 
 @preconcurrency import Foundation
 
+// Stores health data and it's context
 public struct HealthData: Identifiable, Codable, Hashable, Sendable {
     
     public init(id: String, type: DataType, title: String, text: String, date: Date, endDate: Date, data: Double, risk: Int) {

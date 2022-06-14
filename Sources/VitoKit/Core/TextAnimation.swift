@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-
+// Gradient text that animates
 struct TextAnimation: View {
     
     @State var lettersArr: [Letter]
@@ -77,7 +77,7 @@ struct TextAnimation: View {
     
 }
 
-
+// Struct for input for text animation
 public struct Letter {
     public init(letter: String, font: Font = .system(.headline), colors: [Color]) {
         self.letter = letter

@@ -11,6 +11,7 @@ import Accelerate
 @MainActor
 struct StateMachine {
     
+    // Inital level
     private var state: Level
     
     enum Level {
@@ -21,6 +22,7 @@ struct StateMachine {
         case Four(Alert)
         case Five(Alert)
     }
+
     struct Alert {
         var clusterCount: Int = 0
         var hr: [Int] = []
@@ -28,9 +30,11 @@ struct StateMachine {
     }
     
     init() {
+        // On initalize, set state to zero with no clusters or data
         self.state = .Zero(Alert())
     }
     
+    // Drops state to level zero
     mutating func resetAlert() {
         switch self.state {
         case .Five(let alert):
@@ -49,6 +53,8 @@ struct StateMachine {
             break
         }
     }
+    
+    // Returns number of alerts
     func returnNumberOfAlerts() -> Int {
         switch self.state {
         case .Five(var alert):
@@ -60,6 +66,7 @@ struct StateMachine {
             return 0
         }
     }
+    // Returns current alert level, only send an alert if level 5 and two days above alert level 5
     func returnAlert() -> Double {
         switch self.state {
         case .Five(let alert):
@@ -69,7 +76,7 @@ struct StateMachine {
             return 0
         }
     }
-
+    // Calculates median to populate alert
     mutating func calculateMedian(_ hr: Int, _ date: Date?, yellowThres: Float, redThres: Float) -> Double {
         
         switch self.state {
@@ -77,6 +84,7 @@ struct StateMachine {
         case .Five(var alert):
             
             alert.hr.append(hr)
+            // Checks if data count is above 10
             if alert.hr.count > 10 {
                 if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
                     
@@ -231,6 +239,7 @@ struct StateMachine {
         }
         return 0
     }
+    // Calculates median of an arr of doubles
     func calculateMedian(array: [Double]) -> Float? {
         let sorted = array.sorted().filter{!$0.isNaN}
         if !sorted.isEmpty {
@@ -243,6 +252,7 @@ struct StateMachine {
         
         return nil
     }
+    // Calculates average of an arr of doubles
     func average(numbers: [Double]) -> Double {
         
         return vDSP.mean(numbers)

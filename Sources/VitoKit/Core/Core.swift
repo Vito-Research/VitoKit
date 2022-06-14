@@ -10,16 +10,19 @@ import HealthKit
 import SwiftUI
 import Accelerate
 
+// Core class that inherits VitoPermissions and contains core functions
+
+// Main actor keeps all operations on main thread (avoids purple warning)
 @MainActor
 public class Vito: VitoPermissions {
     
      
     
-
+    // Stores health data for reference or computations
     @Published public var healthData = [HealthData]()
     
-    
-    public func vitoState(for category: HealthType, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none, yellowThreshold: Float, redThreshold: Float) {
+    // Special state machine for heart rate data, filters to when asleep, inactive, and at night
+    public func vitoState(for category: HealthType, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none) {
         let health = Health()
         Task {
             var stateMachine = StateMachine()
@@ -31,7 +34,7 @@ public class Vito: VitoPermissions {
                     for (type, unit) in Array(zip(HKQuantityTypeIdentifier.Vitals, HKUnit.Vitals)) {
                         do {
 
-                            if let data = try await health.queryHealthKit(HKQuantityType(type), startDate: start, endDate: end).0 {
+                            if let data = try await health.queryHealthKit(HKQuantityType(type.type), startDate: start, endDate: end).0 {
 
                                 let dataAsSample = data.compactMap({ sample in
                                     sample as? HKQuantitySample
@@ -39,10 +42,10 @@ public class Vito: VitoPermissions {
                                  let avg = vDSP.mean(dataAsSample.map({ $0.quantity.doubleValue(for: unit)}) )
                                     
                                 if avg.isNormal {
-                                    let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: yellowThreshold, redThres: redThreshold))
+                                    let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: type.yellowThreshold, redThres: type.redThreshold))
                                     self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: "", text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
                                 } else if let val = dataAsSample.first?.quantity.doubleValue(for: unit) {
-                                    let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: yellowThreshold, redThres: redThreshold))
+                                    let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: type.yellowThreshold, redThres: type.redThreshold))
                                     self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: "", text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: val, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
                                 } else {
                                     stateMachine.resetAlert()
@@ -62,17 +65,19 @@ public class Vito: VitoPermissions {
         }
      
     }
-    public func outliers(for category: HealthType, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none, yellowThreshold: Float, redThreshold: Float) {
+    // Detects outliers within the data
+    public func outliers(for category: Outlier, unit: HKUnit, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none) {
         let health = Health()
         Task {
             var stateMachine = StateMachine()
             for day in Date.dates(from: startDate, to: endDate) {
                
                            
-                    for (type, unit) in Array(zip(HKQuantityTypeIdentifier.Vitals, HKUnit.Vitals)) {
+                
+                   // for (type, unit) in Array(zip(HKQuantityTypeIdentifier.Vitals, HKUnit.Vitals)) {
                         do {
 
-                            if let data = try await health.queryHealthKit(HKQuantityType(type), startDate: day.addingTimeInterval(.day), endDate: day).0 {
+                            if let data = try await health.queryHealthKit(HKQuantityType(category.type), startDate: day.addingTimeInterval(.day), endDate: day).0 {
 
                                 let dataAsSample = data.compactMap({ sample in
                                     sample as? HKQuantitySample
@@ -80,10 +85,10 @@ public class Vito: VitoPermissions {
                                  let avg = vDSP.mean(dataAsSample.map({ $0.quantity.doubleValue(for: unit)}) )
                                     
                                 if avg.isNormal {
-                                    let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: yellowThreshold, redThres: redThreshold))
+                                    let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
                                     self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: "", text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
                                 } else if let val = dataAsSample.first?.quantity.doubleValue(for: unit) {
-                                    let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: yellowThreshold, redThres: redThreshold))
+                                    let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
                                     self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: "", text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: val, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
                                 } else {
                                     stateMachine.resetAlert()
@@ -93,7 +98,8 @@ public class Vito: VitoPermissions {
                         } catch {
                                 print(error)
                         }
-                        }
+                      //  }
+
                 }
                 }
                 }

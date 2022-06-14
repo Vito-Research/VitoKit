@@ -14,19 +14,27 @@ extension HKQuantityTypeIdentifier: CaseIterable {
         return []
     }
     
-    public static var Mobility: Set<HKQuantityTypeIdentifier> {
-        return [.walkingSpeed, .walkingStepLength, .walkingAsymmetryPercentage, appleWalkingSteadiness]
-    }
+//    public static var Mobility: Set<HKQuantityTypeIdentifier> {
+//        return [.walkingSpeed, .walkingStepLength, .walkingAsymmetryPercentage, appleWalkingSteadiness]
+//    }
+//
+//    public static var Activity: Set<HKQuantityTypeIdentifier> {
+//        return [.stepCount, .appleExerciseTime, .distanceCycling, .distanceSwimming, .distanceWalkingRunning, .sixMinuteWalkTestDistance]
+//    }
     
-    public static var Activity: Set<HKQuantityTypeIdentifier> {
-        return [.stepCount, .appleExerciseTime, .distanceCycling, .distanceSwimming, .distanceWalkingRunning, .sixMinuteWalkTestDistance]
-    }
-
-    public static var Vitals: Set<HKQuantityTypeIdentifier> {
-        return [.heartRate, .respiratoryRate, .restingHeartRate, .walkingHeartRateAverage]
+    // When requesting an HKQuantityTypeIdentifier, an Outlier data struct is filled for easier handling
+    public static var Vitals: Set<Outlier> {
+        return [Outlier(yellowThreshold: 3, redThreshold: 4), Outlier(yellowThreshold: 0.5, redThreshold: 1, type: .respiratoryRate), Outlier(yellowThreshold: 4, redThreshold: 5, type: .restingHeartRate), Outlier(yellowThreshold: 3, redThreshold: 4, type: .walkingHeartRateAverage)]
     }
     
 }
+// Outlier data contains the threshold that the state machine operates on
+public struct Outlier: Hashable {
+    public var yellowThreshold: Float = 3
+    public var redThreshold: Float = 4
+    public var type: HKQuantityTypeIdentifier = .heartRate
+}
+
 extension CaseIterable where Self: RawRepresentable {
     
     static var allValues: [RawValue] {
@@ -34,7 +42,7 @@ extension CaseIterable where Self: RawRepresentable {
         }
 }
 
-
+// Stores HKUnits for health categories
 extension HKUnit: CaseIterable {
     
     public static var allCases: [HKUnit] {

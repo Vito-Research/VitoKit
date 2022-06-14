@@ -8,6 +8,7 @@
 import Foundation
 import SFSafeSymbols
 
+// Utilized in RequestView
 public struct ToggleData: Identifiable, Hashable {
     
     public init(id: UUID, toggle: Bool, explanation: Explanation) {

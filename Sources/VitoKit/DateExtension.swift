@@ -8,6 +8,8 @@
 import Foundation
 
 extension Date {
+    
+    // Retreives days from fromDate to toDate
     static func dates(from fromDate: Date, to toDate: Date) -> [Date] {
         var dates: [Date] = []
         var date = fromDate
@@ -19,6 +21,8 @@ extension Date {
         }
         return dates
     }
+    
+    // Retreives hours from fromDate to toDate
     static func datesHourly(from fromDate: Date, to toDate: Date) -> [Date] {
         var dates: [Date] = []
         var date = fromDate
@@ -31,6 +35,8 @@ extension Date {
         return dates
     }
 }
+
+// Gets date components as an int
 extension Date {
     func get(_ components: Calendar.Component..., calendar: Calendar = Calendar.current) -> DateComponents {
         return calendar.dateComponents(Set(components), from: self)
@@ -40,12 +46,15 @@ extension Date {
         return calendar.component(component, from: self)
     }
 }
+
 extension Date {
-   func getFormattedDate(format: String) -> String {
+    // Formats date
+    func getFormattedDate(format: String) -> String {
         let dateformat = DateFormatter()
         dateformat.dateFormat = format
         return dateformat.string(from: self)
     }
+    // Gets time of time by getting each hour
     func getTimeOfDay() -> String {
         let hour = self.get(.hour)
         var timeOfDay = ""

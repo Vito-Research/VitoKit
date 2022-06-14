@@ -48,23 +48,7 @@ public actor Health {
             }
         }
     }
-    @discardableResult
-    public func loadNewDataFromHealthKit(type: HKSampleType, unit: HKUnit, start: Date, end: Date, activityType: ActivityType) async throws -> HealthData? {
-        
-        let (samples, _, newAnchor) = try await queryHealthKit(type, startDate: start, endDate: end)
-            // Update the anchor.
-        self.anchor = newAnchor
-        if let quantitySamples = samples?.compactMap({ sample in
-            sample as? HKQuantitySample
-        }).map({$0.quantity.doubleValue(for: unit)}) {
-            //.filter{$0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber == activityType.rawValue }
-            return HealthData(id: UUID().uuidString, type: .Health, title: type.identifier, text: "", date: start, endDate: end, data: vDSP.mean(quantitySamples), risk: 0)
-            } else {
-                return nil
-            }
-           
-        
-    }
+    // Queries health data 
     public func queryHealthKit(_ type: HKSampleType, startDate: Date, endDate: Date) async throws -> ([HKSample]?, [HKDeletedObject]?, HKQueryAnchor?) {
         return try await withCheckedThrowingContinuation { continuation in
             // Create a predicate that only returns samples created within the last 24 hours.

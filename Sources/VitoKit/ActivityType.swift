@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 public enum ActivityType: NSNumber {
     
     case none = -1
