@@ -24,7 +24,7 @@ extension HKQuantityTypeIdentifier: CaseIterable {
     
     // When requesting an HKQuantityTypeIdentifier, an Outlier data struct is filled for easier handling
     public static var Vitals: Set<Outlier> {
-        return [Outlier(yellowThreshold: 3, redThreshold: 4)]//, Outlier(yellowThreshold: 0.5, redThreshold: 1, type: .respiratoryRate), Outlier(yellowThreshold: 4, redThreshold: 5, type: .restingHeartRate), Outlier(yellowThreshold: 3, redThreshold: 4, type: .walkingHeartRateAverage)]
+        return [Outlier()]//, Outlier(yellowThreshold: 0.5, redThreshold: 1, type: .respiratoryRate), Outlier(yellowThreshold: 4, redThreshold: 5, type: .restingHeartRate), Outlier(yellowThreshold: 3, redThreshold: 4, type: .walkingHeartRateAverage)]
     }
     
 }

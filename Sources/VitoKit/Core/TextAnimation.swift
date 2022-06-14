@@ -11,6 +11,7 @@ import SwiftUI
 struct TextAnimation: View {
     
     @State var lettersArr: [Letter]
+    
     @State var speed: Double
     
     @State var showMaterial = true

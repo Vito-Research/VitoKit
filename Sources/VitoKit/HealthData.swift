@@ -5,7 +5,8 @@
 //  Created by Andreas Ink on 6/11/22.
 //
 
-@preconcurrency import Foundation
+import SwiftUI
+import Foundation
 
 // Stores health data and it's context
 public struct HealthData: Identifiable, Codable, Hashable, Sendable {
@@ -40,4 +41,10 @@ public enum DataType: String, Codable, CaseIterable, Sendable {
     case Feeling = "Feeling"
     case Risk = "Risk"
     
+}
+
+struct Risk: Hashable {
+    var id: String
+    var risk: CGFloat
+    var explanation: [Explanation]
 }

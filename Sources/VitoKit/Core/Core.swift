@@ -21,12 +21,17 @@ public class Vito: VitoPermissions {
     // Stores health data for reference or computations
     @Published public var healthData = [HealthData]()
     
+    @Published var progress: CGFloat = 0.0
+    
+    @Published var risk = Risk(id: UUID().uuidString, risk: 21, explanation: [Explanation(image: .return, explanation: "Loading", detail: "")])
+    
     // Special state machine for heart rate data, filters to when asleep, inactive, and at night
     public func vitoState(for category: HealthType, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none) {
         let health = Health()
         Task {
             var stateMachine = StateMachine()
-            for day in Date.dates(from: startDate, to: endDate) {
+            let dates = Date.dates(from: startDate, to: endDate)
+            for (day, i) in Array(zip(dates, dates.indices)) {
                 if let sleep = try await health.queryHealthKit(HKObjectType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)!, startDate: day, endDate: day.addingTimeInterval(.day * -1.0)).0 {
                     if let start = sleep.map({$0.startDate}).min() {
                         if let end = sleep.map({$0.endDate}).max() {
@@ -61,6 +66,13 @@ public class Vito: VitoPermissions {
                 }
                 }
                 }
+                if progress < 1 {
+                    progress += (CGFloat(i) / CGFloat(dates.count))
+                } else {
+                    if let last = self.healthData.last {
+                        risk = Risk(id: UUID().uuidString, risk: CGFloat(last.risk), explanation: [Explanation]())
+                    }
+                }
         }
         }
      
@@ -70,11 +82,9 @@ public class Vito: VitoPermissions {
         let health = Health()
         Task {
             var stateMachine = StateMachine()
-            for day in Date.dates(from: startDate, to: endDate) {
+            let dates = Date.dates(from: startDate, to: endDate)
+            for (day, i) in Array(zip(dates, dates.indices)) {
                
-                           
-                
-                   // for (type, unit) in Array(zip(HKQuantityTypeIdentifier.Vitals, HKUnit.Vitals)) {
                         do {
 
                             if let data = try await health.queryHealthKit(HKQuantityType(category.type), startDate: day.addingTimeInterval(.day), endDate: day).0 {
@@ -98,9 +108,19 @@ public class Vito: VitoPermissions {
                         } catch {
                                 print(error)
                         }
-                      //  }
 
+                if progress < 1 {
+                    progress += (CGFloat(i) / CGFloat(dates.count))
+                } else {
+                    if let last = self.healthData.last {
+                        risk = Risk(id: UUID().uuidString, risk: CGFloat(last.risk), explanation: [Explanation]())
+                    }
                 }
                 }
                 }
+                }
+    func average(numbers: [Double]) -> Double {
+        // print(numbers)
+        return vDSP.mean(numbers)
+    }
 }
