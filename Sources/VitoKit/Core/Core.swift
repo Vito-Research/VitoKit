@@ -43,10 +43,10 @@ public class Vito: VitoPermissions {
                                     
                                 if avg.isNormal {
                                     let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: type.yellowThreshold, redThres: type.redThreshold))
-                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: "", text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
+                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: type.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
                                 } else if let val = dataAsSample.first?.quantity.doubleValue(for: unit) {
                                     let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: type.yellowThreshold, redThres: type.redThreshold))
-                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: "", text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: val, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
+                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: type.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: val, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
                                 } else {
                                     stateMachine.resetAlert()
 
@@ -86,10 +86,10 @@ public class Vito: VitoPermissions {
                                     
                                 if avg.isNormal {
                                     let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
-                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: "", text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
+                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
                                 } else if let val = dataAsSample.first?.quantity.doubleValue(for: unit) {
                                     let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
-                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: "", text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: val, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
+                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: val, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
                                 } else {
                                     stateMachine.resetAlert()
 
