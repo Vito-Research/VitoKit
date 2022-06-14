@@ -51,28 +51,28 @@ public class VitoPermissions: ObservableObject {
             switch(type) {
             case .Activity:
                 
-                let activity = HKQuantityTypeIdentifier.activity
+                let activity = HKQuantityTypeIdentifier.Activity
                 
-                quanityTypes =  Set<HKQuantityType>(activity.map { id in
+                quanityTypes.formUnion( Set<HKQuantityType>(activity.map { id in
                     return HKQuantityType(id)
-                })
+                }))
             
             case .Mobility:
-                let mobility = HKQuantityTypeIdentifier.mobility
+                let mobility = HKQuantityTypeIdentifier.Mobility
                 
-                quanityTypes =  Set<HKQuantityType>(mobility.map { id in
+                quanityTypes.formUnion( Set<HKQuantityType>(mobility.map { id in
                     return HKQuantityType(id)
-                })
+                }))
             case .Vitals:
-                let vitals = HKQuantityTypeIdentifier.vitals
+                let vitals = HKQuantityTypeIdentifier.Vitals
                 
-                quanityTypes =  Set<HKQuantityType>(vitals.map { id in
+                quanityTypes.formUnion( Set<HKQuantityType>(vitals.map { id in
                     return HKQuantityType(id)
-                })
+                }))
             }
             
         }
-        let vitals = HKQuantityTypeIdentifier.vitals
+        let vitals = HKQuantityTypeIdentifier.Vitals
         
         quanityTypes =  Set<HKQuantityType>(vitals.map { id in
             return HKQuantityType(id)

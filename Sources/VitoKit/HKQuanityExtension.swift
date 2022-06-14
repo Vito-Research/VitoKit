@@ -14,16 +14,16 @@ extension HKQuantityTypeIdentifier: CaseIterable {
         return []
     }
     
-    public static var mobility: Set<HKQuantityTypeIdentifier> {
+    public static var Mobility: Set<HKQuantityTypeIdentifier> {
         return [.walkingSpeed, .walkingStepLength, .walkingAsymmetryPercentage, appleWalkingSteadiness]
     }
     
-    public static var activity: Set<HKQuantityTypeIdentifier> {
+    public static var Activity: Set<HKQuantityTypeIdentifier> {
         return [.stepCount, .appleExerciseTime, .distanceCycling, .distanceSwimming, .distanceWalkingRunning, .sixMinuteWalkTestDistance]
     }
 
-    public static var vitals: Set<HKQuantityTypeIdentifier> {
-        return [.heartRate]//, .respiratoryRate, .restingHeartRate]
+    public static var Vitals: Set<HKQuantityTypeIdentifier> {
+        return [.heartRate, .respiratoryRate, .restingHeartRate, .walkingHeartRateAverage]
     }
     
 }
@@ -41,15 +41,15 @@ extension HKUnit: CaseIterable {
         return []
     }
     
-    public static var mobility: [HKUnit] {
+    public static var Mobility: [HKUnit] {
         [.mile().unitDivided(by: .hour()), .inch(), .percent(), .percent()]
     }
     
-    public static var activity: [HKUnit] {
+    public static var Activity: [HKUnit] {
         [.count(), .hour(), .mile(), .mile(), .mile(), .mile(), .mile()]
     }
     
-    public static var vitals: [HKUnit] {
-        [HKUnit(from: "count/min")]//, HKUnit(from: "count/min"), HKUnit(from: "count/min")]
+    public static var Vitals: [HKUnit] {
+        [HKUnit(from: "count/min"), HKUnit(from: "count/min"), HKUnit(from: "count/min")]
     }
 }

@@ -30,6 +30,7 @@ struct StateMachine {
     init() {
         self.state = .Zero(Alert())
     }
+    
     mutating func resetAlert() {
         switch self.state {
         case .Five(let alert):
@@ -42,10 +43,10 @@ struct StateMachine {
             self.state = .Zero(alert)
         case .One(let alert):
             self.state = .Zero(alert)
-        
-        
+            
+            
         default:
-           break
+            break
         }
     }
     func returnNumberOfAlerts() -> Int {
@@ -54,7 +55,7 @@ struct StateMachine {
             return alert.hr.count
         case .Four(var alert):
             return alert.hr.count
-        
+            
         default:
             return 0
         }
@@ -68,161 +69,8 @@ struct StateMachine {
             return 0
         }
     }
-//    mutating func calculateMedianHRV(_ hr: Int, _ date: Date?, yellowThres: Int, redThres: Int) -> Double {
-//
-//        switch self.state {
-//
-//        case .Five(var alert):
-//
-//            alert.hr.append(hr)
-//            if alert.hr.count > 10 {
-//            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-//
-//                if hr <= Int(median) - redThres {
-//
-//                    alert.clusterCount += 1
-//
-//                    self.state = .Five(alert)
-//                    return alert.clusterCount > 1 ? 1 : 0
-//                } else if hr == Int(median) - yellowThres {
-//
-//                    self.state = .Three(Alert(hr: alert.hr))
-//                } else {
-//                    self.state = .Zero(Alert(hr: alert.hr))
-//                }
-//            }
-//            } else {
-//                self.state = .Zero(Alert(hr: alert.hr))
-//            }
-//
-//            return 0
-//
-//        case .Four(var alert):
-//            alert.clusterCount = 0
-//            if alert.hr.count > 10 {
-//            alert.hr.append(hr)
-//            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-//
-//                if hr <= Int(median) - redThres {
-//
-//                    self.state = .Five(alert)
-//                    return 1
-//                } else if hr == Int(median) - yellowThres {
-//
-//                    self.state = .Three(Alert(hr: alert.hr))
-//                } else {
-//
-//                    self.state = .Zero(Alert(hr: alert.hr))
-//                }
-//            }
-//            } else {
-//                self.state = .Zero(Alert(hr: alert.hr))
-//            }
-//            return 0
-//
-//        case .Three(var alert):
-//            alert.clusterCount = 0
-//            alert.hr.append(hr)
-//            if alert.hr.count > 10 {
-//
-//            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-//                if hr <= Int(median) - redThres {
-//
-//                    self.state = .Four(alert)
-//
-//                } else if hr == Int(median) - yellowThres {
-//
-//                    self.state = .Three(Alert(hr: alert.hr))
-//                } else {
-//
-//                    self.state = .Zero(Alert(hr: alert.hr))
-//                }
-//            }
-//            } else {
-//                self.state = .Zero(Alert(hr: alert.hr))
-//            }
-//
-//            return 0
-//
-//        case .Two(var alert):
-//            alert.clusterCount = 0
-//            alert.hr.append(hr)
-//            if alert.hr.count > 10 {
-//            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-//                if hr <= Int(median) - redThres {
-//
-//
-//
-//
-//
-//                    self.state = .Five(alert)
-//                    return 1
-//                } else if hr == Int(median) - yellowThres {
-//
-//                    self.state = .Three(Alert(hr: alert.hr))
-//                } else {
-//
-//
-//                    self.state = .Zero(Alert(hr: alert.hr))
-//                }
-//            }
-//            } else {
-//                self.state = .Zero(Alert(hr: alert.hr))
-//            }
-//            return 0
-//        case .One(var alert):
-//            alert.clusterCount = 0
-//            alert.hr.append(hr)
-//            if alert.hr.count > 10 {
-//
-//            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-//                if hr <= Int(median) - redThres {
-//
-//                    self.state = .Four(alert)
-//
-//                } else if hr == Int(median) - yellowThres {
-//
-//                    self.state = .Three(Alert(hr: alert.hr))
-//                } else {
-//
-//                    self.state = .Zero(Alert(hr: alert.hr))
-//                }
-//            }
-//            } else {
-//                self.state = .Zero(Alert(hr: alert.hr))
-//            }
-//            return 0
-//
-//        case .Zero(var alert):
-//            alert.clusterCount = 0
-//            alert.hr.append(hr)
-//            if alert.hr.count > 10 {
-//            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-//                if hr <= Int(median) - redThres {
-//
-//                    self.state = .Two(alert)
-//
-//                } else if hr == Int(median) - yellowThres {
-//
-//                    self.state = .One(Alert(hr: alert.hr))
-//                } else {
-//
-//                    self.state = .Zero(Alert(hr: alert.hr))
-//                }
-//            } else {
-//
-//                self.state = .Zero(Alert(hr: alert.hr))
-//            }
-//            } else {
-//                self.state = .Zero(Alert(hr: alert.hr))
-//            }
-//
-//            return 0
-//
-//        }
-//
-//    }
-    mutating func calculateMedian(_ hr: Int, _ date: Date?, yellowThres: Int, redThres: Int) -> Double {
+
+    mutating func calculateMedian(_ hr: Int, _ date: Date?, yellowThres: Float, redThres: Float) -> Double {
         
         switch self.state {
             
@@ -230,27 +78,27 @@ struct StateMachine {
             
             alert.hr.append(hr)
             if alert.hr.count > 10 {
-            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-                
-                if hr >= Int(median) + redThres {
+                if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
                     
-                    alert.clusterCount += 1
-                    
-                    self.state = .Five(alert)
-                    if alert.clusterCount > 2 {
-                        alert.clusterCount = 0
-                        return 1
+                    if Float(hr) >= (median) + redThres {
+                        
+                        alert.clusterCount += 1
+                        
+                        self.state = .Five(alert)
+                        if alert.clusterCount > 2 {
+                            alert.clusterCount = 0
+                            return 1
+                        } else {
+                            return 0
+                        }
+                        
+                    } else if Float(hr) == (median) + yellowThres {
+                        
+                        self.state = .Three(Alert(hr: alert.hr))
                     } else {
-                        return 0
+                        self.state = .Zero(Alert(hr: alert.hr))
                     }
-                    
-                } else if hr == Int(median) + yellowThres {
-                    
-                    self.state = .Three(Alert(hr: alert.hr))
-                } else {
-                    self.state = .Zero(Alert(hr: alert.hr))
                 }
-            }
             } else {
                 self.state = .Zero(Alert(hr: alert.hr))
             }
@@ -262,20 +110,20 @@ struct StateMachine {
             alert.clusterCount = 0
             alert.hr.append(hr)
             if alert.hr.count > 10 {
-            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-                
-                if hr >= Int(median) + redThres {
+                if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
                     
-                    self.state = .Five(alert)
-                    return 1
-                } else if hr == Int(median) + yellowThres {
-                    
-                    self.state = .Three(Alert(hr: alert.hr))
-                } else {
-                    
-                    self.state = .Zero(Alert(hr: alert.hr))
+                    if Float(hr) >= (median) + redThres {
+                        
+                        self.state = .Five(alert)
+                        return 1
+                    } else if Float(hr) == (median) + yellowThres {
+                        
+                        self.state = .Three(Alert(hr: alert.hr))
+                    } else {
+                        
+                        self.state = .Zero(Alert(hr: alert.hr))
+                    }
                 }
-            }
             } else {
                 self.state = .Zero(Alert(hr: alert.hr))
             }
@@ -285,19 +133,19 @@ struct StateMachine {
             alert.clusterCount = 0
             alert.hr.append(hr)
             if alert.hr.count > 10 {
-            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-                if hr >= Int(median) + redThres {
-                    
-                    self.state = .Four(alert)
-                    
-                } else if hr == Int(median) + yellowThres {
-                    
-                    self.state = .Three(Alert(hr: alert.hr))
-                } else {
-                    
-                    self.state = .Zero(Alert(hr: alert.hr))
+                if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
+                    if Float(hr) >= (median) + redThres {
+                        
+                        self.state = .Four(alert)
+                        
+                    } else if Float(hr) == (median) + yellowThres {
+                        
+                        self.state = .Three(Alert(hr: alert.hr))
+                    } else {
+                        
+                        self.state = .Zero(Alert(hr: alert.hr))
+                    }
                 }
-            }
             } else {
                 self.state = .Zero(Alert(hr: alert.hr))
             }
@@ -308,24 +156,24 @@ struct StateMachine {
             alert.clusterCount = 0
             alert.hr.append(hr)
             if alert.hr.count > 10 {
-            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-                if hr >= Int(median) + redThres {
-                    
-                    
-                    
-                    
-                    
-                    self.state = .Five(alert)
-                    return 1
-                } else if hr == Int(median) + yellowThres {
-                    
-                    self.state = .Three(Alert(hr: alert.hr))
-                } else {
-                    
-                    
-                    self.state = .Zero(Alert(hr: alert.hr))
+                if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
+                    if Float(hr) >= (median) + redThres {
+                        
+                        
+                        
+                        
+                        
+                        self.state = .Five(alert)
+                        return 1
+                    } else if Float(hr) == (median) + yellowThres {
+                        
+                        self.state = .Three(Alert(hr: alert.hr))
+                    } else {
+                        
+                        
+                        self.state = .Zero(Alert(hr: alert.hr))
+                    }
                 }
-            }
             } else {
                 self.state = .Zero(Alert(hr: alert.hr))
             }
@@ -335,19 +183,19 @@ struct StateMachine {
             alert.clusterCount = 0
             alert.hr.append(hr)
             if alert.hr.count > 10 {
-            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-                if hr >= Int(median) + redThres {
-                    
-                    self.state = .Four(alert)
-                    
-                } else if hr == Int(median) + yellowThres {
-                    
-                    self.state = .Three(Alert(hr: alert.hr))
-                } else {
-                    
-                    self.state = .Zero(Alert(hr: alert.hr))
+                if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
+                    if Float(hr) >= (median) + redThres {
+                        
+                        self.state = .Four(alert)
+                        
+                    } else if Float(hr) == (median) + yellowThres {
+                        
+                        self.state = .Three(Alert(hr: alert.hr))
+                    } else {
+                        
+                        self.state = .Zero(Alert(hr: alert.hr))
+                    }
                 }
-            }
             } else {
                 self.state = .Zero(Alert(hr: alert.hr))
             }
@@ -358,22 +206,22 @@ struct StateMachine {
             alert.clusterCount = 0
             alert.hr.append(hr)
             if alert.hr.count > 10 {
-            if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
-                if hr >= Int(median) + redThres {
-                    
-                    self.state = .Two(alert)
-                    
-                } else if hr == Int(median) + yellowThres {
-                    
-                    self.state = .One(Alert(hr: alert.hr))
+                if let median = calculateMedian(array: alert.hr.map{Double($0)}) {
+                    if Float(hr) >= (median) + redThres {
+                        
+                        self.state = .Two(alert)
+                        
+                    } else if Float(hr) == (median) + yellowThres {
+                        
+                        self.state = .One(Alert(hr: alert.hr))
+                    } else {
+                        
+                        self.state = .Zero(Alert(hr: alert.hr))
+                    }
                 } else {
                     
                     self.state = .Zero(Alert(hr: alert.hr))
                 }
-            } else {
-                
-                self.state = .Zero(Alert(hr: alert.hr))
-            }
             } else {
                 self.state = .Zero(Alert(hr: alert.hr))
             }
@@ -381,7 +229,7 @@ struct StateMachine {
             return 0
             
         }
-       return 0
+        return 0
     }
     func calculateMedian(array: [Double]) -> Float? {
         let sorted = array.sorted().filter{!$0.isNaN}
@@ -396,7 +244,7 @@ struct StateMachine {
         return nil
     }
     func average(numbers: [Double]) -> Double {
-    
+        
         return vDSP.mean(numbers)
     }
 }

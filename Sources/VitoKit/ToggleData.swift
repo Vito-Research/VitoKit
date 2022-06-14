@@ -22,11 +22,11 @@ public struct ToggleData: Identifiable, Hashable {
     
 }
 extension ToggleData {
-   public static var mobilty = ToggleData(id: UUID(), toggle: false, explanation: Explanation(image: .figureWalk, explanation: "Learn from your mobility", detail: "More details here"))
+   public static var Mobilty = ToggleData(id: UUID(), toggle: false, explanation: Explanation(image: .figureWalk, explanation: "Learn from your mobility", detail: "More details here"))
     
-    public static var vitals = ToggleData(id: UUID(), toggle: false, explanation: Explanation(image: .heart, explanation: "Vito uses vital trends to measure stress", detail: "This is not a perfect tool, however, generally, stress may be indicative of infection, distress, etc."))
+    public static var Vitals = ToggleData(id: UUID(), toggle: false, explanation: Explanation(image: .heart, explanation: "Vito uses vital trends to measure stress", detail: "This is not a perfect tool, however, generally, stress may be indicative of infection, distress, etc."))
     
-    public static var activity = ToggleData(id: UUID(), toggle: false, explanation: Explanation(image: .bolt, explanation: "Vito uses your activity data to give context to stress", detail: ""))
+    public static var Activity = ToggleData(id: UUID(), toggle: false, explanation: Explanation(image: .bolt, explanation: "Vito uses your activity data to give context to stress", detail: ""))
 }
 public struct Explanation: Hashable {
     

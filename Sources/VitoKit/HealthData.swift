@@ -5,7 +5,7 @@
 //  Created by Andreas Ink on 6/11/22.
 //
 
-import Foundation
+@preconcurrency import Foundation
 
 public struct HealthData: Identifiable, Codable, Hashable, Sendable {
     
@@ -32,7 +32,7 @@ public struct HealthData: Identifiable, Codable, Hashable, Sendable {
     
     
 }
-public enum DataType: String, Codable, CaseIterable {
+public enum DataType: String, Codable, CaseIterable, Sendable {
     
     case HRV = "HRV"
     case Health = "Health"

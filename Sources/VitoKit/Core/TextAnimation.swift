@@ -19,15 +19,15 @@ struct TextAnimation: View {
     @State var spacing: Int
     
     @State var isLeading: Bool
-   
-     @State var showRN = false
+    
+    @State var showRN = false
     
     @State var colors = [Color]()
-     var body: some View {
-        VStack(alignment: isLeading ? .leading : .center, spacing: CGFloat(spacing)) {
-           // Spacer()
     
-   
+    var body: some View {
+        VStack(alignment: isLeading ? .leading : .center, spacing: CGFloat(spacing)) {
+            
+            
             VStack {
                 ForEach(Array(zip($lettersArr, lettersArr.indices)), id: \.1) { $letter, i in
                     HStack {
@@ -35,30 +35,30 @@ struct TextAnimation: View {
                         Text($letter.wrappedValue.letter)
                             .foregroundLinearGradient(
                                 colors: $letter.wrappedValue.colors,
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
                             .font(letter.font)
                             .opacity($letter.wrappedValue.opacity)
                             .multilineTextAlignment(isLeading ? .leading : .center)
                             .fixedSize(horizontal: false, vertical: true)
                             .padding(5)
-                            
+                        
                             .onAppear() {
                                 
                                 
                                 print(speed)
                                 if showRN {
-                                    //withAnimation(.easeInOut) {
+                                
                                     lettersArr[i].opacity = 1
-                                   // }
+                                
                                 }
                                 DispatchQueue.main.asyncAfter(deadline: .now() + TimeInterval(Double(i)/2.0)) {
-                                    //playAudio()
+                                   
                                     withAnimation(.easeInOut(duration: 2.0)) {
                                         lettersArr[i].opacity = 1
                                         
-
+                                        
                                     }
                                 }
                             }
@@ -66,15 +66,15 @@ struct TextAnimation: View {
                     }
                 }
             }
-    
-    
-    
-    
-    
-    
+            
+            
+            
+            
+            
+            
         } .padding(.horizontal)
     }
-
+    
 }
 
 
@@ -97,7 +97,7 @@ extension Text {
         endPoint: UnitPoint) -> some View
     {
         self.overlay {
-
+            
             LinearGradient(
                 colors: colors,
                 startPoint: startPoint,
@@ -105,7 +105,7 @@ extension Text {
             )
             .mask(
                 self
-
+                
             )
         }
     }
