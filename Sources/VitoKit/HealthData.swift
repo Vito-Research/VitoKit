@@ -43,8 +43,8 @@ public enum DataType: String, Codable, CaseIterable, Sendable {
     
 }
 
-struct Risk: Hashable {
-    var id: String
-    var risk: CGFloat
-    var explanation: [Explanation]
+public struct Risk: Hashable {
+    public var id: String
+    public var risk: CGFloat
+    public var explanation: [Explanation]
 }
