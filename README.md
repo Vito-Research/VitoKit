@@ -17,7 +17,7 @@
 ```swift
 let package = Package(
     dependencies: [
-        .package(url: "git@github.com:Vito-Research/VitoKit.git", from: "0.0.0")
+        .package(url: "git@github.com:Vito-Research/VitoKit.git")
     ]
 )
 
