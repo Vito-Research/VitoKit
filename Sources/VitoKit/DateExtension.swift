@@ -68,3 +68,16 @@ extension Date {
         return timeOfDay
     }
 }
+extension Date {
+
+    public func asDay(withFormat format: String = "MM/DD/YYYY")-> Date? {
+
+        let dateFormatter = DateFormatter()
+        let components = Calendar.current.dateComponents([.day, .month, .year], from: self )
+        let date = Calendar.current.date(from: components)
+       
+
+        return date
+
+    }
+}

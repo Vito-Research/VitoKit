@@ -43,15 +43,19 @@ public class Vito: VitoPermissions {
 
                                 let dataAsSample = data.compactMap({ sample in
                                     sample as? HKQuantitySample
-                                }).filter{filterToActivity == .none ? true : $0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber != filterToActivity.rawValue && $0.startDate.getTimeOfDay() == "Night"}
+                                })//.filter{filterToActivity == .none ? true : $0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber != filterToActivity.rawValue && $0.startDate.getTimeOfDay() == "Night"}
                                  let avg = vDSP.mean(dataAsSample.map({ $0.quantity.doubleValue(for: unit)}) )
                                     
                                 if avg.isNormal {
                                     let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: type.yellowThreshold, redThres: type.redThreshold))
-                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: type.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
+                                 
+                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: type.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}))
+                                   
                                 } else if let val = dataAsSample.first?.quantity.doubleValue(for: unit) {
                                     let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: type.yellowThreshold, redThres: type.redThreshold))
-                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: type.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: val, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
+                                   
+                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: type.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}))
+                                    
                                 } else {
                                     stateMachine.resetAlert()
 
@@ -70,7 +74,9 @@ public class Vito: VitoPermissions {
                     progress += (CGFloat(i) / CGFloat(dates.count))
                 } else {
                     if let last = self.healthData.last {
+                        withAnimation(.beat) {
                         risk = Risk(id: UUID().uuidString, risk: CGFloat(last.risk), explanation: [Explanation]())
+                        }
                     }
                 }
         }
@@ -96,10 +102,18 @@ public class Vito: VitoPermissions {
                                     
                                 if avg.isNormal {
                                     let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
-                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
+                                    //if let toDay = day.asDay() {
+                                      
+                                        self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}))
+                                        
+                                   // }
                                 } else if let val = dataAsSample.first?.quantity.doubleValue(for: unit) {
                                     let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
-                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: val, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0))
+                                   // if let toDay = day.asDay() {
+                                      
+                                        self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}))
+                                        
+                                    //}
                                 } else {
                                     stateMachine.resetAlert()
 
@@ -110,16 +124,18 @@ public class Vito: VitoPermissions {
                         }
 
                 if progress < 1 {
+                    withAnimation(.linear) {
                     progress += (CGFloat(i) / CGFloat(dates.count))
-                } else {
-                    if let last = self.healthData.last {
-                        risk = Risk(id: UUID().uuidString, risk: CGFloat(last.risk), explanation: [Explanation]())
                     }
+                } else {
+//                    if let last = self.healthData.last {
+//                        risk = Risk(id: UUID().uuidString, risk: CGFloat(last.risk), explanation: [Explanation]())
+//                    }
                 }
                 }
                 }
                 }
-    func average(numbers: [Double]) -> Double {
+   public func average(numbers: [Double]) -> Double {
         // print(numbers)
         return vDSP.mean(numbers)
     }

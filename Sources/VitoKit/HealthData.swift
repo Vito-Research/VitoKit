@@ -11,7 +11,7 @@ import Foundation
 // Stores health data and it's context
 public struct HealthData: Identifiable, Codable, Hashable, Sendable {
     
-    public init(id: String, type: DataType, title: String, text: String, date: Date, endDate: Date, data: Double, risk: Int) {
+    public init(id: String, type: DataType, title: String, text: String, date: Date, endDate: Date, data: Double, risk: Int, dataPoints: [HealthDataPoint]) {
         self.id = id
         self.type = type
         self.title = title
@@ -20,6 +20,7 @@ public struct HealthData: Identifiable, Codable, Hashable, Sendable {
         self.endDate = endDate
         self.data = data
         self.risk = risk
+        self.dataPoints = dataPoints
     }
     
     public var id: String
@@ -30,7 +31,7 @@ public struct HealthData: Identifiable, Codable, Hashable, Sendable {
     public var endDate: Date?
     public var data: Double
     public var risk: Int
-
+    public var dataPoints: [HealthDataPoint]
     
     
 }
@@ -42,8 +43,22 @@ public enum DataType: String, Codable, CaseIterable, Sendable {
     case Risk = "Risk"
     
 }
+public struct HealthDataPoint: Hashable, Codable {
+    public init(date: Date, value: Double) {
+        self.date = date
+        self.value = value
+    }
+    public var date: Date
+    public var value: Double
+   
+}
 
 public struct Risk: Hashable {
+    public init(id: String, risk: CGFloat, explanation: [Explanation]) {
+        self.id = id
+        self.risk = risk
+        self.explanation = explanation
+    }
     public var id: String
     public var risk: CGFloat
     public var explanation: [Explanation]

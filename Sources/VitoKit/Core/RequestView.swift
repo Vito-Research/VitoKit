@@ -17,10 +17,13 @@ public struct DataTypesListView: View {
     
     @State public var caption: String
     
-    public init(toggleData: [ToggleData], title: String, caption: String) {
+    @State public var showBtn: Bool
+    
+    public init(toggleData: [ToggleData], title: String, caption: String, showBtn: Bool) {
         self.toggleData = toggleData
         self.title = title
         self.caption = caption
+        self.showBtn = showBtn
     }
     
     public var body: some View {
@@ -36,8 +39,11 @@ public struct DataTypesListView: View {
                 .padding(.vertical)
             
             Spacer()
-            TextAnimation(lettersArr: [Letter(letter: title, font: .system(size: 48, weight: .bold, design: .rounded), colors: [.blue, .blue.opacity(0.95)]), Letter(letter: caption, font:  .system(size: 18, weight: .semibold, design: .rounded), colors: [.black.opacity(0.9)])], speed: 2.0, spacing: 2, isLeading: true)
+            if !title.isEmpty {
+            TextAnimation(lettersArr: [Letter(letter: title, font: .system(size: 28, weight: .bold, design: .rounded), colors: [.blue, .blue.opacity(0.95)]), Letter(letter: caption, font:  .system(size: 18, weight: .semibold, design: .rounded), colors: [.black.opacity(0.9)])], speed: 2.0, spacing: 2, isLeading: true)
+            
                 .padding(.bottom)
+            }
             VStack(alignment: .leading) {
                 
                 ForEach(toggleData.indices, id:\.self) { i in
@@ -69,7 +75,7 @@ public struct DataTypesListView: View {
                                 HStack {
                                     
                                     Text(toggleData[i].explanation.detail)
-                                        .font(.system(.caption, design: .rounded))
+                                        .font(.system(.body, design: .rounded))
                                     
                                         .fixedSize(horizontal: false, vertical: true)
                                         .foregroundColor(Color.blue.opacity(0.8))
@@ -85,6 +91,7 @@ public struct DataTypesListView: View {
                     
                 } .padding()
                 Spacer()
+                if showBtn {
                 Button("APPROVE") {
                     Task {
                         do {
@@ -108,6 +115,7 @@ public struct DataTypesListView: View {
                     }
                 } .buttonStyle(VitoBtnStyle(icons: toggleData.map{$0.explanation.image}))
                     .padding(.vertical)
+                }
             }
         }
         
