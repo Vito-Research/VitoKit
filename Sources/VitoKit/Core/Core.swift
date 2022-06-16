@@ -36,7 +36,7 @@ public class Vito: VitoPermissions {
                     if let start = sleep.map({$0.startDate}).min() {
                         if let end = sleep.map({$0.endDate}).max() {
                             
-                    for (type, unit) in Array(zip(HKQuantityTypeIdentifier.Vitals, HKUnit.Vitals)) {
+                    for (type, unit) in Array(zip(HKQuantityTypeIdentifier.Mobility, HKUnit.Mobility)) {
                         do {
 
                             if let data = try await health.queryHealthKit(HKQuantityType(type.type), startDate: start, endDate: end).0 {
@@ -98,7 +98,7 @@ public class Vito: VitoPermissions {
                                 let dataAsSample = data.compactMap({ sample in
                                     sample as? HKQuantitySample
                                 })
-                                 let avg = vDSP.mean(dataAsSample.map({ $0.quantity.doubleValue(for: unit)}) )
+                                let avg = vDSP.mean(dataAsSample.map({ $0.quantity.doubleValue(for: category.unit)}) )
                                     
                                 if avg.isNormal {
                                     let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))

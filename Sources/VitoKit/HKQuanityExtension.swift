@@ -21,18 +21,31 @@ extension HKQuantityTypeIdentifier: CaseIterable {
 //    public static var Activity: Set<HKQuantityTypeIdentifier> {
 //        return [.stepCount, .appleExerciseTime, .distanceCycling, .distanceSwimming, .distanceWalkingRunning, .sixMinuteWalkTestDistance]
 //    }
-    
+    public static var Mobility: Set<Outlier> {
+        return [Outlier(yellowThreshold: 0, redThreshold: 0, type: .walkingSpeed, unit: .mile().unitDivided(by: .hour())), Outlier(yellowThreshold: 0, redThreshold: 0, type: .walkingStepLength, unit: .inch()), Outlier(yellowThreshold: 0, redThreshold: 0, type: .walkingAsymmetryPercentage, unit: .percent()),
+                Outlier(yellowThreshold: 3, redThreshold: 4, type: .walkingDoubleSupportPercentage, unit: .percent())]
+    }
+    public static var Activity: Set<Outlier> {
+        return [Outlier(yellowThreshold: 0, redThreshold: 0, type: .stepCount), Outlier(yellowThreshold: 0, redThreshold: 0, type: .distanceWalkingRunning)]
+    }
     // When requesting an HKQuantityTypeIdentifier, an Outlier data struct is filled for easier handling
     public static var Vitals: Set<Outlier> {
-        return [Outlier()]//, Outlier(yellowThreshold: 0.5, redThreshold: 1, type: .respiratoryRate), Outlier(yellowThreshold: 4, redThreshold: 5, type: .restingHeartRate), Outlier(yellowThreshold: 3, redThreshold: 4, type: .walkingHeartRateAverage)]
+        return [Outlier()]
     }
     
 }
 // Outlier data contains the threshold that the state machine operates on
 public struct Outlier: Hashable {
-    public var yellowThreshold: Float = 3
-    public var redThreshold: Float = 4
-    public var type: HKQuantityTypeIdentifier = .heartRate
+    public var yellowThreshold: Float
+    public var redThreshold: Float
+    public var type: HKQuantityTypeIdentifier
+    public var unit: HKUnit
+    public init(yellowThreshold: Float = 3, redThreshold: Float = 4, type: HKQuantityTypeIdentifier = .heartRate, unit: HKUnit = .count().unitDivided(by: .minute())) {
+        self.yellowThreshold = yellowThreshold
+        self.redThreshold = redThreshold
+        self.type = type
+        self.unit = unit
+    }
 }
 
 extension CaseIterable where Self: RawRepresentable {
@@ -50,11 +63,11 @@ extension HKUnit: CaseIterable {
     }
     
     public static var Mobility: [HKUnit] {
-        [.mile().unitDivided(by: .hour()), .inch(), .percent(), .percent()]
+        [.mile().unitDivided(by: .hour()), .percent(), .mile().unitDivided(by: .hour()), .percent()]
     }
     
     public static var Activity: [HKUnit] {
-        [.count(), .hour(), .mile(), .mile(), .mile(), .mile(), .mile()]
+        [.count(), .mile()]
     }
     
     public static var Vitals: [HKUnit] {

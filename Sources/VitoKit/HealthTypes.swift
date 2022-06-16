@@ -10,8 +10,8 @@ import Foundation
 // Various health categories
 public enum HealthType {
     
-//    case Mobility
-//    case Activity
+    case Mobility
+    case Activity
     case Vitals
     
 }
