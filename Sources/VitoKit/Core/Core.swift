@@ -36,35 +36,35 @@ public class Vito: VitoPermissions {
                     if let start = sleep.map({$0.startDate}).min() {
                         if let end = sleep.map({$0.endDate}).max() {
                             
-                    for (type, unit) in Array(zip(HKQuantityTypeIdentifier.Mobility, HKUnit.Mobility)) {
-                        do {
-
-                            if let data = try await health.queryHealthKit(HKQuantityType(type.type), startDate: start, endDate: end).0 {
-
-                                let dataAsSample = data.compactMap({ sample in
-                                    sample as? HKQuantitySample
-                                })//.filter{filterToActivity == .none ? true : $0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber != filterToActivity.rawValue && $0.startDate.getTimeOfDay() == "Night"}
-                                 let avg = vDSP.mean(dataAsSample.map({ $0.quantity.doubleValue(for: unit)}) )
-                                    
-                                if avg.isNormal {
-                                    let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: type.yellowThreshold, redThres: type.redThreshold))
-                                 
-                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: type.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}))
-                                   
-                                } else if let val = dataAsSample.first?.quantity.doubleValue(for: unit) {
-                                    let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: type.yellowThreshold, redThres: type.redThreshold))
-                                   
-                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: type.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}))
-                                    
-                                } else {
-                                    stateMachine.resetAlert()
-
-                                }
-                            }
-                        } catch {
-                                print(error)
-                        }
-                        }
+//                    for (type, unit) in Array(zip(HKQuantityTypeIdentifier.Mobility, HKUnit.Mobility)) {
+//                        do {
+//
+//                            if let data = try await health.queryHealthKit(HKQuantityType(type.type), startDate: start, endDate: end).0 {
+//
+//                                let dataAsSample = data.compactMap({ sample in
+//                                    sample as? HKQuantitySample
+//                                })//.filter{filterToActivity == .none ? true : $0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber != filterToActivity.rawValue && $0.startDate.getTimeOfDay() == "Night"}
+//                                 let avg = vDSP.mean(dataAsSample.map({ $0.quantity.doubleValue(for: unit)}) )
+//                                    
+//                                if avg.isNormal {
+//                                    let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: type.yellowThreshold, redThres: type.redThreshold))
+//                                 
+//                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: type.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}))
+//                                   
+//                                } else if let val = dataAsSample.first?.quantity.doubleValue(for: unit) {
+//                                    let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: type.yellowThreshold, redThres: type.redThreshold))
+//                                   
+//                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: type.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}))
+//                                    
+//                                } else {
+//                                    stateMachine.resetAlert()
+//
+//                                }
+//                            }
+//                        } catch {
+//                                print(error)
+//                        }
+//                        }
            
 
                 }

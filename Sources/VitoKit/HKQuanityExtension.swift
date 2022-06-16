@@ -26,7 +26,7 @@ extension HKQuantityTypeIdentifier: CaseIterable {
                 Outlier(yellowThreshold: 3, redThreshold: 4, type: .walkingDoubleSupportPercentage, unit: .percent())]
     }
     public static var Activity: Set<Outlier> {
-        return [Outlier(yellowThreshold: 0, redThreshold: 0, type: .stepCount), Outlier(yellowThreshold: 0, redThreshold: 0, type: .distanceWalkingRunning)]
+        return [Outlier(yellowThreshold: 0, redThreshold: 0, type: .stepCount, unit: .count()), Outlier(yellowThreshold: 0, redThreshold: 0, type: .distanceWalkingRunning, unit: .mile())]
     }
     // When requesting an HKQuantityTypeIdentifier, an Outlier data struct is filled for easier handling
     public static var Vitals: Set<Outlier> {
@@ -55,22 +55,3 @@ extension CaseIterable where Self: RawRepresentable {
         }
 }
 
-// Stores HKUnits for health categories
-extension HKUnit: CaseIterable {
-    
-    public static var allCases: [HKUnit] {
-        return []
-    }
-    
-    public static var Mobility: [HKUnit] {
-        [.mile().unitDivided(by: .hour()), .percent(), .mile().unitDivided(by: .hour()), .percent()]
-    }
-    
-    public static var Activity: [HKUnit] {
-        [.count(), .mile()]
-    }
-    
-    public static var Vitals: [HKUnit] {
-        [HKUnit(from: "count/min"), HKUnit(from: "count/min"), HKUnit(from: "count/min")]
-    }
-}
