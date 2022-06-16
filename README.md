@@ -17,7 +17,7 @@
 ```swift
 let package = Package(
     dependencies: [
-        .package(url: "git@github.com:Vito-Research/VitoKit.git", from: "0.0.0")
+        .package(url: "git@github.com:Vito-Research/VitoKit.git")
     ]
 )
 
@@ -36,7 +36,7 @@ Depending on which category of health data you would like to query, within toggl
 > Mobility - double support time, walking asymmetry, step length
 
 ```swift
-DataTypesListView(toggleData: [.vitals], title: "Health Data", caption: "Why we need this data...")
+DataTypesListView(toggleData: [.Vitals], title: "Health Data", caption: "Why we need this data...")
 ```
 
 #### Data Querying
@@ -49,7 +49,9 @@ A level based algorithm that detects outliers
 
 ```swift
 let vito = Vito()
-vito.populateWithTrends(for: .Vitals, with: Date().addingTimeInterval(.month * 24), to: Date(), filterToActivity: .active)
+for (type, unit) in Array(zip(HKQuantityTypeIdentifier.Vitals, HKUnit.Vitals)) {
+                            vito.outliers(for: type, unit: unit, with: Date().addingTimeInterval(.month * 4), to: Date(), filterToActivity: .active)
+                       }
 ```
 
 Machine Learning
