@@ -48,10 +48,10 @@ State Machine
 A level based algorithm that detects outliers
 
 ```swift
-let vito = Vito()
-for (type, unit) in Array(zip(HKQuantityTypeIdentifier.Vitals, HKUnit.Vitals)) {
-                            vito.outliers(for: type, unit: unit, with: Date().addingTimeInterval(.month * 4), to: Date(), filterToActivity: .active)
-                       }
+for type in HKQuantityTypeIdentifier.Activity {
+                            
+                            vito.outliers(for: type, unit: type.unit, with: Date().addingTimeInterval(.month * 4), to: Date(), filterToActivity: .active)
+                        }
 ```
 
 Machine Learning
