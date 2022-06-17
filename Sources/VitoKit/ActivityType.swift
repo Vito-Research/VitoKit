@@ -12,7 +12,7 @@ public enum ActivityType: NSNumber {
     
     case none = -1
     case unknown = 0
-    case active = 1
-    case inactive = 2
+    case active = 2
+    case inactive = 1
     
 }

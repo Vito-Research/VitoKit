@@ -9,10 +9,11 @@ import SwiftUI
 import CreateML
 import TabularData
 
-class ML {
+public class ML {
     
+    public init() {}
     // Classifies data based on context, returns an accuracy score of the model
-    func classifier(_ data: [HealthData]) throws -> Double? {
+    public func classifier(_ data: [HealthData]) throws -> Double? {
         
         // Prepare df with columns
         let date = Column(name: "Date", contents: data.map{$0.date})
