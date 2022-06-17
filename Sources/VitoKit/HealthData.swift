@@ -11,7 +11,7 @@ import Foundation
 // Stores health data and it's context
 public struct HealthData: Identifiable, Codable, Hashable, Sendable {
     
-    public init(id: String, type: DataType, title: String, text: String, date: Date, endDate: Date, data: Double, risk: Int, dataPoints: [HealthDataPoint]) {
+    public init(id: String, type: DataType, title: String, text: String, date: Date, endDate: Date, data: Double, risk: Int, dataPoints: [HealthDataPoint], context: String = "") {
         self.id = id
         self.type = type
         self.title = title
@@ -21,6 +21,7 @@ public struct HealthData: Identifiable, Codable, Hashable, Sendable {
         self.data = data
         self.risk = risk
         self.dataPoints = dataPoints
+        self.context = context
     }
     
     public var id: String
@@ -32,6 +33,7 @@ public struct HealthData: Identifiable, Codable, Hashable, Sendable {
     public var data: Double
     public var risk: Int
     public var dataPoints: [HealthDataPoint]
+    public var context: String
     
     
 }

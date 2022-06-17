@@ -15,6 +15,7 @@ struct TextAnimation: View {
     @State var speed: Double
     
     @State var showMaterial = true
+    
     @State var showText = true
     
     @State var spacing: Int

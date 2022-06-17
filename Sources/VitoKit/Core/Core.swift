@@ -21,8 +21,10 @@ public class Vito: VitoPermissions {
     // Stores health data for reference or computations
     @Published public var healthData = [HealthData]()
     
+    // If 1 then data has loaded
     @Published public var progress: CGFloat = 0.0
     
+    // Contextualizes the last current day's outlier
     @Published public var risk = Risk(id: UUID().uuidString, risk: 21, explanation: [Explanation(image: .return, explanation: "Loading", detail: "")])
     
     // Special state machine for heart rate data, filters to when asleep, inactive, and at night
@@ -102,18 +104,18 @@ public class Vito: VitoPermissions {
                                     
                                 if avg.isNormal {
                                     let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
-                                    //if let toDay = day.asDay() {
+                                   
                                       
                                         self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}))
                                         
-                                   // }
+                              
                                 } else if let val = dataAsSample.first?.quantity.doubleValue(for: unit) {
                                     let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
-                                   // if let toDay = day.asDay() {
+                                 
                                       
                                         self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}))
                                         
-                                    //}
+                      
                                 } else {
                                     stateMachine.resetAlert()
 
@@ -128,15 +130,14 @@ public class Vito: VitoPermissions {
                     progress += (CGFloat(i) / CGFloat(dates.count))
                     }
                 } else {
-//                    if let last = self.healthData.last {
-//                        risk = Risk(id: UUID().uuidString, risk: CGFloat(last.risk), explanation: [Explanation]())
-//                    }
+
                 }
                 }
                 }
                 }
+   // Calculates average
    public func average(numbers: [Double]) -> Double {
-        // print(numbers)
+        // Speedier computation
         return vDSP.mean(numbers)
     }
 }
