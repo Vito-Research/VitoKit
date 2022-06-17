@@ -2,7 +2,7 @@
 
 ![Twitter post - 8.png](https://res.craft.do/user/full/23a03a79-af5e-1af9-b4ff-27170389b6b1/doc/AB3125ED-4677-462B-B685-7579F290E38A/07815B4B-95A1-4CA6-91E7-F8EC17B9F535_2/If1dhMo7DxNcxeSQOlh06ZSAVZAyFSexxVGsRVqnnhgz/Twitter%20post%20-%208.png)
 
-## 😀 Welcome to VitoKit..
+## 😀 Welcome to VitoKit...
 
 ### A framework that enhances HealthKit and the Fitbit API for iOS
 
@@ -56,7 +56,17 @@ for type in HKQuantityTypeIdentifier.Activity {
 
 Machine Learning
 
-TBD
+Random Forest Classifier
+
+```swift
+
+  do {
+                        let ml = ML()
+                        let correlation = try ml.classifier(vito.healthData)
+                        } catch {
+                            
+                        }
+```
 
 Deep Learning
 
