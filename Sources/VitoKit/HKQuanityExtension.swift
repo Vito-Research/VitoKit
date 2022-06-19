@@ -26,7 +26,7 @@ extension HKQuantityTypeIdentifier: CaseIterable {
                 Outlier(yellowThreshold: 3, redThreshold: 4, type: .walkingDoubleSupportPercentage, unit: .percent())]
     }
     public static var Activity: Set<Outlier> {
-        return [Outlier(yellowThreshold: 0, redThreshold: 0, type: .stepCount, unit: .count()), Outlier(yellowThreshold: 0, redThreshold: 0, type: .distanceWalkingRunning, unit: .mile())]
+        return [Outlier(yellowThreshold: 0, redThreshold: 0, type: .stepCount, unit: .count())]
     }
     // When requesting an HKQuantityTypeIdentifier, an Outlier data struct is filled for easier handling
     public static var Vitals: Set<Outlier> {
