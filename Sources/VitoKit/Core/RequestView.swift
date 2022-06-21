@@ -19,11 +19,13 @@ public struct DataTypesListView: View {
     
     @State public var showBtn: Bool
     
-    public init(toggleData: [ToggleData], title: String, caption: String, showBtn: Bool) {
+    @ObservedObject var vito: Vito
+    public init(toggleData: [ToggleData], title: String, caption: String, showBtn: Bool = true, vito: Vito) {
         self.toggleData = toggleData
         self.title = title
         self.caption = caption
         self.showBtn = showBtn
+        self.vito = vito
     }
     
     public var body: some View {
@@ -94,28 +96,37 @@ public struct DataTypesListView: View {
                 if showBtn {
                 Button("APPROVE") {
                     Task {
-                        do {
-                            let vito = Vito()
-                            
+                       
+                        
+                            var selectedTypes = [HealthType]()
+                        
                             for i in toggleData.indices {
                                 if toggleData[i].explanation.image == .bolt {
-                                    //vito.selectedTypes.append(.Activity)
+                                    selectedTypes.append(.Activity)
                                 }
                                 if toggleData[i].explanation.image == .figureWalk {
                                     //vito.selectedTypes.append(.Mobility)
+                                    selectedTypes.append(.Mobility)
                                 }
                                 if toggleData[i].explanation.image == .heart {
-                                    vito.selectedTypes.append(.Vitals)
+                                    selectedTypes.append(.Vitals)
                                 }
                             }
-                            try await vito.authorize()
-                        } catch {
-                            
-                        }
+                           
+                               
+                                    print(selectedTypes)
+                                    
+                                    vito.auth(selectedTypes: selectedTypes)
+                                    
+                       
+                           
+                        
+                                
+                        
                     }
                 } .buttonStyle(VitoBtnStyle(icons: toggleData.map{$0.explanation.image}))
                     .padding(.vertical)
-                }
+                } 
             }
         }
         

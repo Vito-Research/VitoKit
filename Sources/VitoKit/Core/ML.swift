@@ -4,6 +4,9 @@
 //
 //  Created by Andreas Ink on 6/16/22.
 //
+#if targetEnvironment(simulator)
+
+#else
 
 import SwiftUI
 import CreateML
@@ -36,3 +39,4 @@ public class ML {
     
 }
 
+#endif

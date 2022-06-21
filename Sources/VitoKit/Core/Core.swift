@@ -28,6 +28,8 @@ public class Vito: VitoPermissions {
     @Published public var risk = Risk(id: UUID().uuidString, risk: 21, explanation: [Explanation(image: .return, explanation: "Loading", detail: "")])
     
     // Special state machine for heart rate data, filters to when asleep, inactive, and at night
+    
+    
     public func vitoState(for category: HealthType, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none) {
         let health = Health()
         Task {
