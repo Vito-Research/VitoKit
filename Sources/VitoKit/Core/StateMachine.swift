@@ -57,9 +57,9 @@ struct StateMachine {
     // Returns number of alerts
     func returnNumberOfAlerts() -> Int {
         switch self.state {
-        case .Five(var alert):
+        case .Five(let alert):
             return alert.hr.count
-        case .Four(var alert):
+        case .Four(let alert):
             return alert.hr.count
             
         default:
