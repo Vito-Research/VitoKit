@@ -19,13 +19,11 @@ public class VitoPermissions: Fitbit {
             return quanityTypes.map{HKHealthStore().authorizationStatus(for: .quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: $0.identifier)) ?? .workoutType()) == .notDetermined}.filter{$0 == true}.count > 0
         
     }
-    @AppStorage("fitbit") public var fitbit = true
-    
+    @AppStorage("fitbit") public var fitbit = false
+    @AppStorage("launchedBefore") public var launchedBefore = false
     public init(selectedTypes: [HealthType], fitbit: Bool = true) {
       
-        if fitbit {
-            self.autheticated = true
-        } else {
+      
         var quanityTypes: Set<HKObjectType> = []
         for type in selectedTypes {
         switch(type) {
@@ -51,11 +49,57 @@ public class VitoPermissions: Fitbit {
         }
         }
         print(quanityTypes)
-       
-        self.autheticated = false//quanityTypes.map{HKHealthStore().authorizationStatus(for: .quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: $0.identifier)) ?? .workoutType()) == .notDetermined}.filter{$0 == true}.count > 0
-    }
+           
+    
         self.fitbit = fitbit
+        self.autheticated = false
     }
+    func start(selectedTypes: [HealthType], fitbit: Bool = true) {
+          
+            if fitbit {
+                if !UserDefaults().bool(forKey: "launchedBefore") {
+                    self.autheticated = true
+                } else {
+                self.autheticated = false
+                }
+            } else {
+            var quanityTypes: Set<HKObjectType> = []
+            for type in selectedTypes {
+            switch(type) {
+
+            case .Vitals:
+                let vitals = HKQuantityTypeIdentifier.Vitals
+                
+                quanityTypes.formUnion( Set<HKQuantityType>(vitals.map { id in
+                    return HKQuantityType(id.type)
+                }))
+            case .Mobility:
+                let mobility = HKQuantityTypeIdentifier.Mobility
+                
+                quanityTypes.formUnion( Set<HKQuantityType>(mobility.map { id in
+                    return HKQuantityType(id.type)
+                }))
+            case .Activity:
+                let activity = HKQuantityTypeIdentifier.Activity
+                
+                quanityTypes.formUnion( Set<HKQuantityType>(activity.map { id in
+                    return HKQuantityType(id.type)
+                }))
+            }
+            }
+            print(quanityTypes)
+                if fitbit {
+                    if !UserDefaults().bool(forKey: "launchedBefore") {
+                        self.autheticated = true
+                    } else {
+                    self.autheticated = false
+                    }
+                    } else {
+            self.autheticated = quanityTypes.map{HKHealthStore().authorizationStatus(for: .quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: $0.identifier)) ?? .workoutType()) == .notDetermined}.filter{$0 == true}.count > 0
+                    }
+        }
+            self.fitbit = fitbit
+        }
     
     // Core class for HK
     public let healthStore = HKHealthStore()

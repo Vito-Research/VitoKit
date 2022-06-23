@@ -46,10 +46,12 @@ public struct DataTypesListView: View {
                 
         
         } else {
+            
+        }
         VStack(alignment: .leading) {
             Spacer()
             
-            
+            if !title.isEmpty {
             Image(systemSymbol: .chartBar)
                 .font(.system(size: 65, weight: .bold, design: .rounded))
                 .foregroundColor(Color.accentColor)
@@ -57,7 +59,7 @@ public struct DataTypesListView: View {
                 .padding(.vertical)
             
             Spacer()
-            if !title.isEmpty {
+            
             TextAnimation(lettersArr: [Letter(letter: title, font: .system(size: 28, weight: .bold, design: .rounded), colors: [.blue, .blue.opacity(0.95)]), Letter(letter: caption, font:  .system(size: 18, weight: .semibold, design: .rounded), colors: [.black.opacity(0.9)])], speed: 2.0, spacing: 2, isLeading: true)
             
                 .padding(.bottom)
@@ -144,7 +146,7 @@ public struct DataTypesListView: View {
                     .padding(.vertical)
                 } 
             }
-        }
+        
         
     }
 }

@@ -19,7 +19,9 @@ public class Vito: VitoPermissions {
      
     
     // Stores health data for reference or computations
-    @UserDefault("healthData", defaultValue: []) public  var healthData: [HealthData]
+    @UserDefault("healthData", defaultValue: []) public var healthData: [HealthData]
+    
+    @UserDefault("settings", defaultValue: SettingsData()) public var settings: SettingsData
     
     // If 1 then data has loaded
     @Published public var progress: CGFloat = 0.0
@@ -31,9 +33,14 @@ public class Vito: VitoPermissions {
     /// To be reimplmented
     
     // Detects outliers within the data
-    public func outliers(for category: Outlier, unit: HKUnit, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none, context: String = "") {
+    public func outliers(for category: Outlier, unit: HKUnit, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none, context: String = "", testData: [HealthData] = []) {
         let health = Health()
+        
         Task {
+            var context = context
+            if !testData.isEmpty {
+                context = "TEST"
+            }
             var stateMachine = StateMachine()
             let dates = Date.dates(from: startDate, to: endDate)
             if fitbit {
@@ -44,6 +51,7 @@ public class Vito: VitoPermissions {
                     let start = formatter.string(from: startDate)
                     let end = formatter.string(from: endDate)
                     print(start)
+                if testData.isEmpty {
                 if category.type == .heartRate {
                 if let data = try await getHeartrate(start: start, end: end)?.activitiesHeart {
                     print(data)
@@ -100,6 +108,7 @@ public class Vito: VitoPermissions {
                       
                     }
                 }
+                }
             } else {
                 
             }
@@ -108,6 +117,7 @@ public class Vito: VitoPermissions {
                         do {
                             var avg = 0.0
                             var dataAsSample = [HKQuantitySample]()
+                            if testData.isEmpty {
                             if fitbit {
                                 
                                 let formatter = DateFormatter()
@@ -127,6 +137,13 @@ public class Vito: VitoPermissions {
                                 })
                                avg = vDSP.mean(dataAsSample.map({ $0.quantity.doubleValue(for: category.unit)}) )
                             }
+                            }
+                            } else {
+                                let data = testData.filter{$0.date.formatted(date: .numeric, time: .omitted) == day.formatted(date: .numeric, time: .omitted)}
+                                for data in data {
+                                    dataAsSample.append(HKQuantitySample(type: HKQuantityType(.heartRate), quantity: HKQuantity(unit: HKUnit(from: "count/min"), doubleValue: data.data), start: data.date, end: data.date))
+                                }
+                                avg = average(numbers: data.map{$0.data})
                             }
                             
                                 if avg.isNormal {
@@ -161,6 +178,10 @@ public class Vito: VitoPermissions {
 
                 }
                 }
+            let sorted = self.healthData.sorted(by: { a, b in
+                return a.date < b.date
+            })
+            healthData = sorted
             }
                 }
                 

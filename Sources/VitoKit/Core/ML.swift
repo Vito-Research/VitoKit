@@ -15,6 +15,11 @@ import TabularData
 public class ML {
     
     public init() {}
+    
+    func exportAsCSV(_ data: [HealthData]) {
+        let df = DataFrame(csvData: JSONEncoder().encode(data))
+        df.writeCSV(to: getDocumentsDirectory().appendingPathComponent("HealthData.csv"))
+    }
     // Classifies data based on context, returns an accuracy score of the model
     public func classifier(_ data: [HealthData]) throws -> Double? {
         
@@ -36,7 +41,13 @@ public class ML {
         let trainingAccuracy = (1.0 - trainingError) * 100
         return trainingAccuracy
     }
-    
+    public func getDocumentsDirectory() -> URL {
+        // find all possible documents directories for this user
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        
+        // just send back the first one, which ought to be the only one
+        return paths[0]
+    }
 }
 
 #endif
