@@ -53,8 +53,8 @@ public actor Health {
         }
     }
     // Queries health data 
-    public func queryHealthKit(_ type: HKSampleType, startDate: Date, endDate: Date, completionHandler: @escaping ([HKSample]?, [HKDeletedObject]?, HKQueryAnchor?) -> Void)  throws {
-      
+    public func queryHealthKit(_ type: HKSampleType, startDate: Date, endDate: Date) async throws -> ([HKSample]?, [HKDeletedObject]?, HKQueryAnchor?) {
+        return try await withCheckedThrowingContinuation { continuation in
             // Create a predicate that only returns samples created within the last 24 hours.
           
             let datePredicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate])
@@ -63,16 +63,20 @@ public actor Health {
             let query = HKAnchoredObjectQuery(
                 type: type,
                 predicate: datePredicate,
-                anchor: nil,
+                anchor: anchor,
                 limit: HKObjectQueryNoLimit) { (_, samples, deletedSamples, newAnchor, error) in
-                print(samples)
+              
                 // When the query ends, check for errors.
-                    completionHandler(samples, deletedSamples, newAnchor)
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    //print(samples)
+                    continuation.resume(returning: (samples, deletedSamples, newAnchor))
+                }
                 
             }
-            
             print(query)
             store.execute(query)
-        
+        }
     }
 }

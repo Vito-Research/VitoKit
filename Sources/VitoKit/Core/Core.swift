@@ -11,7 +11,7 @@ import SwiftUI
 import Accelerate
 
 // Core class that inherits VitoPermissions and contains core functions
-
+@MainActor
 public class Vito: VitoPermissions {
     
      
@@ -35,7 +35,7 @@ public class Vito: VitoPermissions {
         let health = Health(store)
         Task {
         do {
-        try await store.enableBackgroundDelivery(for: HKQuantityType(.heartRate), frequency: .daily)
+        try await store.enableBackgroundDelivery(for: HKQuantityType(.heartRate), frequency: .immediate)
            // if enabled {
         } catch {
         }
@@ -47,7 +47,7 @@ public class Vito: VitoPermissions {
             if !testData.isEmpty {
                 context = "TEST"
             }
-            var stateMachine = await StateMachine()
+            var stateMachine =  StateMachine()
             let dates = Date.dates(from: startDate, to: endDate)
             if fitbit {
                
@@ -136,16 +136,13 @@ public class Vito: VitoPermissions {
                                 avg = average(numbers: data.map{$0.activitiesHeart.map{Double($0.value.restingHeartRate ?? 0)}} ?? [])
                                 dataAsSample = [HKQuantitySample(type: HKQuantityType(.heartRate), quantity: HKQuantity(unit: HKUnit(from: "count/min"), doubleValue: avg), start: day.addingTimeInterval(.day), end: day)]
                             } else {
-                                let _ = try await health.queryHealthKit(HKQuantityType(category.type), startDate: day.addingTimeInterval(.day), endDate: day, completionHandler: { data, _, _ in
-                                    
-                               
-                                     if let data = data {
-                                     let dataAsSample = data.compactMap({ sample in
+                            if let data = try await health.queryHealthKit(HKQuantityType(category.type), startDate: day.addingTimeInterval(.day), endDate: day).0 {
+
+                                let dataAsSample = data.compactMap({ sample in
                                     sample as? HKQuantitySample
-                                    }).filter{filterToActivity == .none ? true : $0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber != filterToActivity.rawValue && $0.startDate.getTimeOfDay() == "Night"}
+                                }).filter{filterToActivity == .none ? true : $0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber != filterToActivity.rawValue && $0.startDate.getTimeOfDay() == "Night"}
                                avg = vDSP.mean(dataAsSample.map({ $0.quantity.doubleValue(for: category.unit)}) )
-                                     }
-                                })
+                            }
                             }
                             } else {
                                 let data = testData.filter{$0.date.formatted(date: .numeric, time: .omitted) == day.formatted(date: .numeric, time: .omitted)}
@@ -156,19 +153,19 @@ public class Vito: VitoPermissions {
                             }
                             
                                 if avg.isNormal {
-                                    let risk = await Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
+                                    let risk =  Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
                                    
                                       
-                                    await self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}, context: context))
+                                     self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}, context: context))
                                         
                               
                                 } else if let val = dataAsSample.first?.quantity.doubleValue(for: unit) {
                                     if val.isNormal {
                                         do {
-                                            let risk = await Int(stateMachine.calculateMedian(Int(val), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
+                                            let risk =  Int(stateMachine.calculateMedian(Int(val), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
                                  
                                       
-                                            await self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))},  context: context))
+                                             self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))},  context: context))
                                       
                                        // }
                                             } catch {
@@ -178,7 +175,7 @@ public class Vito: VitoPermissions {
                                     }
                       
                                 } else {
-                                    await stateMachine.resetAlert()
+                                     stateMachine.resetAlert()
 
                                 }
                             if day.formatted(date: .numeric, time: .omitted) == Date().formatted(date: .numeric, time: .omitted) {
