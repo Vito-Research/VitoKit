@@ -27,9 +27,25 @@ public struct DataTypesListView: View {
         self.showBtn = showBtn
         self.vito = vito
     }
-    
+    @StateObject var webViewModel = WebViewModel()
     public var body: some View {
+        if vito.fitbit {
+            
+            WebView(webView: webViewModel.webView)
+               
+                .onAppear() {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                        
+                
+                        vito.accessToken = webViewModel.webView.url?.absoluteString.replacingOccurrences(of: "https://andreasink.web.app/#access_token=", with: "").replacingOccurrences(of: " ", with: "").components(separatedBy: "&")[0]
+                    print(vito.accessToken)
+                    }
+                                                  }
+                    
+                    
+                
         
+        } else {
         VStack(alignment: .leading) {
             Spacer()
             
@@ -131,4 +147,5 @@ public struct DataTypesListView: View {
         }
         
     }
+}
 }

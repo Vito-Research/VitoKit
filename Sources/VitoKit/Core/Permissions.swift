@@ -11,7 +11,7 @@ import SwiftUI
 
 
 @MainActor
-public class VitoPermissions: ObservableObject {
+public class VitoPermissions: Fitbit {
     
     public func checkForAuth(_ selectedTypes: [HealthType]) -> Bool {
         let quanityTypes: Set<HKObjectType> = getAllTypes(selectedTypes: selectedTypes)
@@ -19,10 +19,13 @@ public class VitoPermissions: ObservableObject {
             return quanityTypes.map{HKHealthStore().authorizationStatus(for: .quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: $0.identifier)) ?? .workoutType()) == .notDetermined}.filter{$0 == true}.count > 0
         
     }
+    @AppStorage("fitbit") public var fitbit = true
     
-    public init(selectedTypes: [HealthType]) {
+    public init(selectedTypes: [HealthType], fitbit: Bool = true) {
       
-       
+        if fitbit {
+            self.autheticated = true
+        } else {
         var quanityTypes: Set<HKObjectType> = []
         for type in selectedTypes {
         switch(type) {
@@ -49,7 +52,9 @@ public class VitoPermissions: ObservableObject {
         }
         print(quanityTypes)
        
-        self.autheticated = quanityTypes.map{HKHealthStore().authorizationStatus(for: .quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: $0.identifier)) ?? .workoutType()) == .notDetermined}.filter{$0 == true}.count > 0
+        self.autheticated = false//quanityTypes.map{HKHealthStore().authorizationStatus(for: .quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: $0.identifier)) ?? .workoutType()) == .notDetermined}.filter{$0 == true}.count > 0
+    }
+        self.fitbit = fitbit
     }
     
     // Core class for HK
