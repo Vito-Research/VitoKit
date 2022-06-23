@@ -12,7 +12,11 @@ import Accelerate
 
 
 public actor Health {
-    public let store = HKHealthStore()
+    
+    public init(_ store: HKHealthStore) {
+        self.store = store
+    }
+    public let store: HKHealthStore
     public let anchorKey = "anchorKey"
     public var anchor: HKQueryAnchor? {
         get {
@@ -49,8 +53,8 @@ public actor Health {
         }
     }
     // Queries health data 
-    public func queryHealthKit(_ type: HKSampleType, startDate: Date, endDate: Date) async throws -> ([HKSample]?, [HKDeletedObject]?, HKQueryAnchor?) {
-        return try await withCheckedThrowingContinuation { continuation in
+    public func queryHealthKit(_ type: HKSampleType, startDate: Date, endDate: Date, completionHandler: @escaping ([HKSample]?, [HKDeletedObject]?, HKQueryAnchor?) -> Void)  throws {
+      
             // Create a predicate that only returns samples created within the last 24 hours.
           
             let datePredicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate])
@@ -61,17 +65,14 @@ public actor Health {
                 predicate: datePredicate,
                 anchor: nil,
                 limit: HKObjectQueryNoLimit) { (_, samples, deletedSamples, newAnchor, error) in
-                //print(samples)
+                print(samples)
                 // When the query ends, check for errors.
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else {
-                    //print(samples)
-                    continuation.resume(returning: (samples, deletedSamples, newAnchor))
-                }
+                    completionHandler(samples, deletedSamples, newAnchor)
                 
             }
+            
+            print(query)
             store.execute(query)
-        }
+        
     }
 }

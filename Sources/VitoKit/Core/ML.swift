@@ -16,9 +16,13 @@ public class ML {
     
     public init() {}
     
-    func exportAsCSV(_ data: [HealthData]) {
-        let df = DataFrame(csvData: JSONEncoder().encode(data))
-        df.writeCSV(to: getDocumentsDirectory().appendingPathComponent("HealthData.csv"))
+    public func exportAsCSV(_ data: [HealthData])  {
+        do {
+        let df = try DataFrame(csvData: JSONEncoder().encode(data))
+        try df.writeCSV(to: getDocumentsDirectory().appendingPathComponent("HealthData.csv"))
+        } catch {
+            
+        }
     }
     // Classifies data based on context, returns an accuracy score of the model
     public func classifier(_ data: [HealthData]) throws -> Double? {

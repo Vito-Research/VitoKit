@@ -12,8 +12,6 @@ import Accelerate
 
 // Core class that inherits VitoPermissions and contains core functions
 
-// Main actor keeps all operations on main thread (avoids purple warning)
-@MainActor
 public class Vito: VitoPermissions {
     
      
@@ -31,17 +29,25 @@ public class Vito: VitoPermissions {
     
     // Special state machine for heart rate data, filters to when asleep, inactive, and at night
     /// To be reimplmented
-    
+    @Published var store = HKHealthStore()
     // Detects outliers within the data
-    public func outliers(for category: Outlier, unit: HKUnit, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none, context: String = "", testData: [HealthData] = []) {
-        let health = Health()
-        
+    public func outliers(for category: Outlier, unit: HKUnit, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none, context: String = "", testData: [HealthData] = [])  {
+        let health = Health(store)
+        Task {
+        do {
+        try await store.enableBackgroundDelivery(for: HKQuantityType(.heartRate), frequency: .daily)
+           // if enabled {
+        } catch {
+        }
+        }
+           print("YOOOO")
+      
         Task {
             var context = context
             if !testData.isEmpty {
                 context = "TEST"
             }
-            var stateMachine = StateMachine()
+            var stateMachine = await StateMachine()
             let dates = Date.dates(from: startDate, to: endDate)
             if fitbit {
                
@@ -59,10 +65,10 @@ public class Vito: VitoPermissions {
                 for day in data {
                     if let value = day.value.restingHeartRate {
                         if let date =  formatter.date(from: day.dateTime) {
-                    let risk = Int(stateMachine.calculateMedian(Int(value), date, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
+                            let risk = await Int(stateMachine.calculateMedian(Int(value), date, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
                
                   
-                        self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: date, endDate: date, data: Double(value), risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: [HealthDataPoint(date: date, value: Double(value))], context: context))
+                            await self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: date, endDate: date, data: Double(value), risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: [HealthDataPoint(date: date, value: Double(value))], context: context))
                 }
                     }
                 }
@@ -72,10 +78,10 @@ public class Vito: VitoPermissions {
                         for day in data.br {
                             let value = day.value.breathingRate
                             if let date =  formatter.date(from: day.dateTime) {
-                                let risk = Int(stateMachine.calculateMedian(Int(value), date, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
+                                let risk = await Int(stateMachine.calculateMedian(Int(value), date, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
                                 
                                 
-                                self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: date, endDate: date, data: Double(value), risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: [HealthDataPoint(date: date, value: Double(value))], context: context))
+                                await self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: date, endDate: date, data: Double(value), risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: [HealthDataPoint(date: date, value: Double(value))], context: context))
                             }
                         }
                       
@@ -86,10 +92,10 @@ public class Vito: VitoPermissions {
                         for day in data.hrv {
                             let value = day.value.deepRmssd
                             if let date =  formatter.date(from: day.dateTime) {
-                                let risk = Int(stateMachine.calculateMedian(Int(value), date, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
+                                let risk = await Int(stateMachine.calculateMedian(Int(value), date, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
                                 
                                 
-                                self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: date, endDate: date, data: Double(value), risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: [HealthDataPoint(date: date, value: Double(value))], context: context))
+                                await self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: date, endDate: date, data: Double(value), risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: [HealthDataPoint(date: date, value: Double(value))], context: context))
                             }
                         }
                       
@@ -99,10 +105,10 @@ public class Vito: VitoPermissions {
                         for day in data {
                             let value = day.value.avg
                             if let date =  formatter.date(from: day.dateTime) {
-                                let risk = Int(stateMachine.calculateMedian(Int(value), date, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
+                                let risk = await Int(stateMachine.calculateMedian(Int(value), date, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
                                 
                                 
-                                self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: date, endDate: date, data: Double(value), risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: [HealthDataPoint(date: date, value: Double(value))], context: context))
+                                await self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: date, endDate: date, data: Double(value), risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: [HealthDataPoint(date: date, value: Double(value))], context: context))
                             }
                         }
                       
@@ -130,13 +136,16 @@ public class Vito: VitoPermissions {
                                 avg = average(numbers: data.map{$0.activitiesHeart.map{Double($0.value.restingHeartRate ?? 0)}} ?? [])
                                 dataAsSample = [HKQuantitySample(type: HKQuantityType(.heartRate), quantity: HKQuantity(unit: HKUnit(from: "count/min"), doubleValue: avg), start: day.addingTimeInterval(.day), end: day)]
                             } else {
-                            if let data = try await health.queryHealthKit(HKQuantityType(category.type), startDate: day.addingTimeInterval(.day), endDate: day).0 {
-
-                                let dataAsSample = data.compactMap({ sample in
+                                let _ = try await health.queryHealthKit(HKQuantityType(category.type), startDate: day.addingTimeInterval(.day), endDate: day, completionHandler: { data, _, _ in
+                                    
+                               
+                                     if let data = data {
+                                     let dataAsSample = data.compactMap({ sample in
                                     sample as? HKQuantitySample
-                                })
+                                    }).filter{filterToActivity == .none ? true : $0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber != filterToActivity.rawValue && $0.startDate.getTimeOfDay() == "Night"}
                                avg = vDSP.mean(dataAsSample.map({ $0.quantity.doubleValue(for: category.unit)}) )
-                            }
+                                     }
+                                })
                             }
                             } else {
                                 let data = testData.filter{$0.date.formatted(date: .numeric, time: .omitted) == day.formatted(date: .numeric, time: .omitted)}
@@ -147,25 +156,47 @@ public class Vito: VitoPermissions {
                             }
                             
                                 if avg.isNormal {
-                                    let risk = Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
+                                    let risk = await Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
                                    
                                       
-                                    self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}, context: context))
+                                    await self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))}, context: context))
                                         
                               
                                 } else if let val = dataAsSample.first?.quantity.doubleValue(for: unit) {
                                     if val.isNormal {
-                                    let risk = Int(stateMachine.calculateMedian(Int(val), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
+                                        do {
+                                            let risk = await Int(stateMachine.calculateMedian(Int(val), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
                                  
                                       
-                                        self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))},  context: context))
+                                            await self.healthData.append(HealthData(id: UUID().uuidString, type: .Health, title: category.type.rawValue, text: "", date: day, endDate: day.addingTimeInterval(.day * -1), data: avg, risk: stateMachine.returnNumberOfAlerts() > 10 ? risk : 0, dataPoints: dataAsSample.map{HealthDataPoint(date: $0.startDate, value: $0.quantity.doubleValue(for: unit))},  context: context))
+                                      
+                                       // }
+                                            } catch {
+                                                
+                                            }
+                                        
                                     }
                       
                                 } else {
-                                    stateMachine.resetAlert()
+                                    await stateMachine.resetAlert()
 
                                 }
-                            
+                            if day.formatted(date: .numeric, time: .omitted) == Date().formatted(date: .numeric, time: .omitted) {
+                                //if risk == 1 {
+                                    let content = UNMutableNotificationContent()
+                                    content.title = "Stress Alert"
+                                    content.subtitle = "Your heart rate is abnormally high"
+                                    content.sound = UNNotificationSound.default
+
+                                    // show this notification five seconds from now
+                                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+
+                                    // choose a random identifier
+                                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+                                    // add our notification request
+                                    try await UNUserNotificationCenter.current().add(request)
+                                }
                         } catch {
                                 print(error)
                         }
@@ -183,8 +214,9 @@ public class Vito: VitoPermissions {
             })
             healthData = sorted
             }
-                }
-                
+               // }
+        }
+    
     
   
    // Calculates average

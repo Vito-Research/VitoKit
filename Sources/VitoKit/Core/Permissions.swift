@@ -10,7 +10,7 @@ import HealthKit
 import SwiftUI
 
 
-@MainActor
+
 public class VitoPermissions: Fitbit {
     
     public func checkForAuth(_ selectedTypes: [HealthType]) -> Bool {
