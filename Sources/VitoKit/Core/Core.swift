@@ -178,7 +178,8 @@ public class Vito: VitoPermissions {
                                      stateMachine.resetAlert()
 
                                 }
-                            if day.formatted(date: .numeric, time: .omitted) == Date().formatted(date: .numeric, time: .omitted) {
+                            if healthData.last?.risk == 1 {
+                                if healthData.last?.date.formatted(date: .numeric, time: .omitted) == Date().formatted(date: .numeric, time: .omitted) {
                                 //if risk == 1 {
                                     let content = UNMutableNotificationContent()
                                     content.title = "Stress Alert"
@@ -194,6 +195,7 @@ public class Vito: VitoPermissions {
                                     // add our notification request
                                     try await UNUserNotificationCenter.current().add(request)
                                 }
+                            }
                         } catch {
                                 print(error)
                         }
