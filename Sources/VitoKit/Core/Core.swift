@@ -138,7 +138,7 @@ public class Vito: VitoPermissions {
                             } else {
                             if let data = try await health.queryHealthKit(HKQuantityType(category.type), startDate: day.addingTimeInterval(.day), endDate: day).0 {
 
-                                let dataAsSample = data.compactMap({ sample in
+                                 dataAsSample = data.compactMap({ sample in
                                     sample as? HKQuantitySample
                                 }).filter{filterToActivity == .none ? true : $0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber != filterToActivity.rawValue && $0.startDate.getTimeOfDay() == "Night"}
                                avg = vDSP.mean(dataAsSample.map({ $0.quantity.doubleValue(for: category.unit)}) )
@@ -208,7 +208,7 @@ public class Vito: VitoPermissions {
 
                 }
                 }
-            let sorted = self.healthData.sorted(by: { a, b in
+            let sorted = Array(Set(self.healthData)).sorted(by: { a, b in
                 return a.date < b.date
             })
             healthData = sorted
