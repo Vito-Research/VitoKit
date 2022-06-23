@@ -71,11 +71,13 @@ public actor Health {
                     continuation.resume(throwing: error)
                 } else {
                     //print(samples)
+                    self.anchor = newAnchor
                     continuation.resume(returning: (samples, deletedSamples, newAnchor))
                 }
                 
             }
             print(query)
+            
             store.execute(query)
         }
     }
