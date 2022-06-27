@@ -19,6 +19,7 @@ public class Vito: VitoPermissions {
     // Stores health data for reference or computations
     @UserDefault("healthData", defaultValue: []) public var healthData: [HealthData]
     
+    @Published public var healthDataDict: [String: HealthData] = [:]
     @UserDefault("settings", defaultValue: SettingsData()) public var settings: SettingsData
     
     // If 1 then data has loaded
@@ -31,7 +32,16 @@ public class Vito: VitoPermissions {
     /// To be reimplmented
     @Published var store = HKHealthStore()
     // Detects outliers within the data
+    
+    public func populateDict() {
+        for date in Date.dates(from: Date().addingTimeInterval(.month*6), to: Date()) {
+            if let data = healthData.filter({$0.date.formatted(date: .numeric, time: .omitted) == date.formatted(date: .numeric, time: .omitted)}).first {
+            healthDataDict[date.formatted(date: .numeric, time: .omitted)] = data
+            }
+        }
+    }
     public func outliers(for category: Outlier, unit: HKUnit, with startDate: Date, to endDate: Date, filterToActivity: ActivityType = .none, context: String = "", testData: [HealthData] = [])  {
+        populateDict()
         let health = Health(store)
         Task {
         do {
@@ -208,10 +218,10 @@ public class Vito: VitoPermissions {
 
                 }
                 }
-            let sorted = Array(Set(self.healthData)).sorted(by: { a, b in
-                return a.date < b.date
-            })
-            healthData = sorted
+//            let sorted = Array(Set(self.healthData)).sorted(by: { a, b in
+//                return a.date < b.date
+//            })
+//            healthData = sorted
             }
                // }
         }
