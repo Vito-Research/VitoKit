@@ -9,6 +9,7 @@ import Foundation
 import HealthKit
 import SwiftUI
 
+@MainActor
 public class VitoPermissions: Fitbit {
     public func checkForAuth(_ selectedTypes: [HealthType]) -> Bool {
         let quanityTypes: Set<HKObjectType> = getAllTypes(selectedTypes: selectedTypes)
@@ -16,7 +17,8 @@ public class VitoPermissions: Fitbit {
         return quanityTypes.map { HKHealthStore().authorizationStatus(for: .quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: $0.identifier)) ?? .workoutType()) == .notDetermined }.filter { $0 == true }.count > 0
     }
 
-    @AppStorage("fitbit") public var fitbit = false
+    //@AppStorage("fitbit") public var fitbit = false
+    @Published public var fitbit = false
     @AppStorage("launchedBefore") public var launchedBefore = false
     public init(selectedTypes: [HealthType], fitbit: Bool = true) {
         var quanityTypes: Set<HKObjectType> = []
@@ -44,11 +46,11 @@ public class VitoPermissions: Fitbit {
         }
         print(quanityTypes)
 
-        self.fitbit = fitbit
+        //self.fitbit = fitbit
         autheticated = false
     }
 
-    func start(selectedTypes: [HealthType], fitbit: Bool = true) {
+    func start(selectedTypes: [HealthType], fitbit: Bool = false) {
         if fitbit {
             if !UserDefaults().bool(forKey: "launchedBefore") {
                 autheticated = true
@@ -87,10 +89,10 @@ public class VitoPermissions: Fitbit {
                     autheticated = false
                 }
             } else {
-                autheticated = quanityTypes.map { HKHealthStore().authorizationStatus(for: .quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: $0.identifier)) ?? .workoutType()) == .notDetermined }.filter { $0 == true }.count > 0
+                autheticated = quanityTypes.map { HKHealthStore().authorizationStatus(for: .quantityType(forIdentifier: HKQuantityTypeIdentifier(rawValue: $0.identifier)) ??  HKQuantityType(.heartRate)) == .notDetermined }.filter { $0 == true }.count > 0
             }
         }
-        self.fitbit = fitbit
+       // self.fitbit = fitbit
     }
 
     // Core class for HK

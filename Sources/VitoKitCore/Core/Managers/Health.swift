@@ -50,7 +50,7 @@ public actor Health {
             }
         }
     }
-
+    
     // Queries health data
     public func queryHealthKit(_ type: HKSampleType, startDate: Date, endDate: Date) async throws -> ([HKSample]?, [HKDeletedObject]?, HKQueryAnchor?) {
         return try await withCheckedThrowingContinuation { continuation in
@@ -70,7 +70,7 @@ public actor Health {
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else {
-                    // print(samples)
+                   
                     self.anchor = newAnchor
                     continuation.resume(returning: (samples, deletedSamples, newAnchor))
                 }

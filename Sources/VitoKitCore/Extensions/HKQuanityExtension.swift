@@ -31,9 +31,9 @@ extension HKQuantityTypeIdentifier: CaseIterable {
 
     // When requesting an HKQuantityTypeIdentifier, an Outlier data struct is filled for easier handling
     public static var Vitals: Set<Outlier> {
-        return [Outlier(),
-                Outlier(yellowThreshold: 4, redThreshold: 5, type: .oxygenSaturation, unit: HKUnit(from: "count/min")),
-                Outlier(yellowThreshold: -10, redThreshold: -15, type: .heartRateVariabilitySDNN, unit: HKUnit(from: "ms")),
+        return [Outlier(yellowThreshold: 3, redThreshold: 4, type: .heartRate, unit: HKUnit(from: "count/min")),
+                //Outlier(yellowThreshold: 4, redThreshold: 5, type: .oxygenSaturation, unit: HKUnit.percent()),
+               // Outlier(yellowThreshold: -10, redThreshold: -15, type: .heartRateVariabilitySDNN, unit: .secondUnit(with: .milli)),
                 Outlier(yellowThreshold: 2, redThreshold: 3, type: .respiratoryRate, unit: HKUnit(from: "count/min"))]
     }
 }
@@ -44,7 +44,7 @@ public struct Outlier: Hashable {
     public var redThreshold: Float
     public var type: HKQuantityTypeIdentifier
     public var unit: HKUnit
-    public init(yellowThreshold: Float = 3, redThreshold: Float = 4, type: HKQuantityTypeIdentifier = .heartRate, unit: HKUnit = .count().unitDivided(by: .minute())) {
+    public init(yellowThreshold: Float, redThreshold: Float, type: HKQuantityTypeIdentifier, unit: HKUnit) {
         self.yellowThreshold = yellowThreshold
         self.redThreshold = redThreshold
         self.type = type

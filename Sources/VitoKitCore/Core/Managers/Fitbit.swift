@@ -7,12 +7,13 @@
 
 import SwiftUI
 
+@MainActor
 public class Fitbit: ObservableObject {
     var session = URLSession.shared
-    @AppStorage("accessToken") var accessToken: String?
+    @AppStorage("accessToken") public var accessToken: String?
 
     public init() {}
-
+   
     func getHRV(start: String, end: String) async throws -> HRVQuery? {
         if let accessToken = accessToken {
             var request = URLRequest(url: URL(string: "https://api.fitbit.com/1/user/-/hrv/date/\(start)/\(end).json")!)
@@ -113,13 +114,4 @@ public class Fitbit: ObservableObject {
         }
     }
 
-    func authorizeFitbit(_ data: Data, to url: URL, type _: String = "POST") async throws -> (Data, URLResponse) {
-        var request = URLRequest(url: url)
-        //
-
-        return try await session.upload(
-            for: request,
-            from: data
-        )
-    }
 }
