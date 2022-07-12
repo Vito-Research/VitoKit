@@ -29,7 +29,9 @@ public extension ToggleData {
     static var Activity = ToggleData(id: UUID(), toggle: false, explanation: Explanation(image: .bolt, explanation: "Vito uses your activity data to give context to stress", detail: ""))
 }
 
-public struct Explanation: Hashable {
+public struct Explanation: Identifiable, Hashable {
+    public var id: UUID = UUID()
+    
     public init(image: SFSymbol, explanation: String, detail: String) {
         self.image = image
         self.explanation = explanation
