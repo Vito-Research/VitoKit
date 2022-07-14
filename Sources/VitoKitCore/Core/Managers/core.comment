@@ -1,0 +1,24 @@
+// request.setValue("application/json", forHTTPHeaderField: "Accept")
+
+                //populateDict()
+                //if autheticated 
+                // if enabled {
+                // try await getFitbitData(for: category, unit: unit, with: startDate, to: endDate)
+                //.filter { filterToActivity == .none ? true : $0.metadata?["HKMetadataKeyHeartRateMotionContext"] as? NSNumber != filterToActivity.rawValue }//&& $0.startDate.getTimeOfDay() == "Night" }
+                //Int(stateMachine.calculateMedian(Int(avg), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
+                //Int(stateMachine.calculateMedian(Int(val), day, yellowThres: category.yellowThreshold, redThres: category.redThreshold))
+                // if risk == 1 {
+
+                                                //                    populateDict(Date().addingTimeInterval(.month), Date())
+                                //                    DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                                //                        self.populateDict(Date().addingTimeInterval(.month * 3),Date().addingTimeInterval(.month * 1))
+                                //                    }
+
+
+                                                //            let sorted = Array(Set(self.healthData)).sorted(by: { a, b in
+                //                return a.date < b.date
+                //            })
+                //            healthData = sorted
+
+
+                //}
