@@ -8,8 +8,12 @@
 import Foundation
 import SwiftUI
 
+public struct LightHealthData: Codable, Hashable {
+    public var date: Date
+    public var risk: Int
+}
 // Stores health data and it's context
-public struct HealthData: Identifiable, Codable, Hashable, Sendable {
+public struct HealthData: Identifiable, Codable, Hashable {
     public init(id: String, type: DataType, title: String, text: String, date: Date, endDate: Date, data: Double, risk: Int, dataPoints: [HealthDataPoint], context: String = "") {
         self.id = id
         self.type = type
